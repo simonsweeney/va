@@ -1,0 +1,146 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/home/ubuntu/.nvm/versions/node/v4.6.1/bin/node',
+1 verbose cli   '/home/ubuntu/.nvm/versions/node/v4.6.1/bin/npm',
+1 verbose cli   'install',
+1 verbose cli   '--save',
+1 verbose cli   'gl-texture-2d' ]
+2 info using npm@2.15.9
+3 info using node@v4.6.1
+4 verbose install initial load of /home/ubuntu/workspace/package.json
+5 warn package.json bong-base@1.0.0 No repository field.
+6 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/babel-preset-es2015/package.json
+7 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/babelify/package.json
+8 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/browserify/package.json
+9 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/detectcss/package.json
+10 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/eases/package.json
+11 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/es5-ext/package.json
+12 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/es6-iterator/package.json
+13 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/es6-symbol/package.json
+14 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/gl-context/package.json
+15 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/gl-fbo/package.json
+16 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/gl-geometry/package.json
+17 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/gl-mat4/package.json
+18 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/gl-render-cubemap/package.json
+19 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/gl-shader/package.json
+20 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/gl-shader-core/package.json
+21 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/gl-texture-cube/package.json
+22 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/gl-texture2d/package.json
+23 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/gl-toy/package.json
+24 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/gl-vao/package.json
+25 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/glsl-diffuse-oren-nayar/package.json
+26 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/glsl-fast-gaussian-blur/package.json
+27 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/glsl-noise/package.json
+28 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/glsl-perturb-normal/package.json
+29 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/glsl-random/package.json
+30 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/glsl-raytrace/package.json
+31 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/glsl-sdf-normal/package.json
+32 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/glsl-sdf-ops/package.json
+33 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/glsl-sdf-primitives/package.json
+34 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/glsl-specular-blinn-phong/package.json
+35 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/glsl-specular-cook-torrance/package.json
+36 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/glsl-specular-gaussian/package.json
+37 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/glslify/package.json
+38 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/gulp/package.json
+39 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/gulp-autoprefixer/package.json
+40 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/gulp-sass/package.json
+41 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/gulp-streamify/package.json
+42 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/gulp-uglify/package.json
+43 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/gulp-util/package.json
+44 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/imgurify/package.json
+45 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/jquery/package.json
+46 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/lodash/package.json
+47 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/ndarray/package.json
+48 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/promise/package.json
+49 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/stringify/package.json
+50 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/vinyl-buffer/package.json
+51 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/vinyl-source-stream/package.json
+52 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/node_modules/watchify/package.json
+53 info package.json detectcss@1.0.2 No license field.
+54 info package.json gulp-streamify@1.0.2 No license field.
+55 info package.json imgurify@2.0.0 license should be a valid SPDX license expression
+56 verbose readDependencies loading dependencies from /home/ubuntu/workspace/package.json
+57 silly cache add args [ 'gl-texture-2d', null ]
+58 verbose cache add spec gl-texture-2d
+59 silly cache add parsed spec Result {
+59 silly cache add   raw: 'gl-texture-2d',
+59 silly cache add   scope: null,
+59 silly cache add   name: 'gl-texture-2d',
+59 silly cache add   rawSpec: '',
+59 silly cache add   spec: 'latest',
+59 silly cache add   type: 'tag' }
+60 silly addNamed gl-texture-2d@latest
+61 verbose addNamed "latest" is being treated as a dist-tag for gl-texture-2d
+62 info addNameTag [ 'gl-texture-2d', 'latest' ]
+63 silly mapToRegistry name gl-texture-2d
+64 silly mapToRegistry using default registry
+65 silly mapToRegistry registry https://registry.npmjs.org/
+66 silly mapToRegistry data Result {
+66 silly mapToRegistry   raw: 'gl-texture-2d',
+66 silly mapToRegistry   scope: null,
+66 silly mapToRegistry   name: 'gl-texture-2d',
+66 silly mapToRegistry   rawSpec: '',
+66 silly mapToRegistry   spec: 'latest',
+66 silly mapToRegistry   type: 'tag' }
+67 silly mapToRegistry uri https://registry.npmjs.org/gl-texture-2d
+68 verbose addNameTag registry:https://registry.npmjs.org/gl-texture-2d not in flight; fetching
+69 verbose request uri https://registry.npmjs.org/gl-texture-2d
+70 verbose request no auth needed
+71 info attempt registry request try #1 at 12:48:44 PM
+72 verbose request id a65320569074ce78
+73 http request GET https://registry.npmjs.org/gl-texture-2d
+74 http 404 https://registry.npmjs.org/gl-texture-2d
+75 verbose headers { 'content-type': 'application/json',
+75 verbose headers   'cache-control': 'max-age=0',
+75 verbose headers   'content-length': '2',
+75 verbose headers   'accept-ranges': 'bytes',
+75 verbose headers   date: 'Mon, 16 Jan 2017 12:48:45 GMT',
+75 verbose headers   via: '1.1 varnish',
+75 verbose headers   age: '0',
+75 verbose headers   connection: 'keep-alive',
+75 verbose headers   'x-served-by': 'cache-lcy1135-LCY',
+75 verbose headers   'x-cache': 'MISS',
+75 verbose headers   'x-cache-hits': '0',
+75 verbose headers   'x-timer': 'S1484570924.813827,VS0,VE621',
+75 verbose headers   vary: 'Accept-Encoding' }
+76 silly get cb [ 404,
+76 silly get   { 'content-type': 'application/json',
+76 silly get     'cache-control': 'max-age=0',
+76 silly get     'content-length': '2',
+76 silly get     'accept-ranges': 'bytes',
+76 silly get     date: 'Mon, 16 Jan 2017 12:48:45 GMT',
+76 silly get     via: '1.1 varnish',
+76 silly get     age: '0',
+76 silly get     connection: 'keep-alive',
+76 silly get     'x-served-by': 'cache-lcy1135-LCY',
+76 silly get     'x-cache': 'MISS',
+76 silly get     'x-cache-hits': '0',
+76 silly get     'x-timer': 'S1484570924.813827,VS0,VE621',
+76 silly get     vary: 'Accept-Encoding' } ]
+77 verbose stack Error: Registry returned 404 for GET on https://registry.npmjs.org/gl-texture-2d
+77 verbose stack     at makeError (/home/ubuntu/.nvm/versions/node/v4.6.1/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:264:12)
+77 verbose stack     at CachingRegistryClient.<anonymous> (/home/ubuntu/.nvm/versions/node/v4.6.1/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:242:14)
+77 verbose stack     at Request._callback (/home/ubuntu/.nvm/versions/node/v4.6.1/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:172:14)
+77 verbose stack     at Request.self.callback (/home/ubuntu/.nvm/versions/node/v4.6.1/lib/node_modules/npm/node_modules/request/request.js:200:22)
+77 verbose stack     at emitTwo (events.js:87:13)
+77 verbose stack     at Request.emit (events.js:172:7)
+77 verbose stack     at Request.<anonymous> (/home/ubuntu/.nvm/versions/node/v4.6.1/lib/node_modules/npm/node_modules/request/request.js:1067:10)
+77 verbose stack     at emitOne (events.js:82:20)
+77 verbose stack     at Request.emit (events.js:169:7)
+77 verbose stack     at IncomingMessage.<anonymous> (/home/ubuntu/.nvm/versions/node/v4.6.1/lib/node_modules/npm/node_modules/request/request.js:988:12)
+78 verbose statusCode 404
+79 verbose pkgid gl-texture-2d
+80 verbose cwd /home/ubuntu/workspace
+81 error Linux 4.2.0-c9
+82 error argv "/home/ubuntu/.nvm/versions/node/v4.6.1/bin/node" "/home/ubuntu/.nvm/versions/node/v4.6.1/bin/npm" "install" "--save" "gl-texture-2d"
+83 error node v4.6.1
+84 error npm  v2.15.9
+85 error code E404
+86 error 404 Registry returned 404 for GET on https://registry.npmjs.org/gl-texture-2d
+86 error 404
+86 error 404 'gl-texture-2d' is not in the npm registry.
+86 error 404 You should bug the author to publish it (or use the name yourself!)
+86 error 404 It was specified as a dependency of 'bong-base'
+86 error 404
+86 error 404 Note that you can also install from a
+86 error 404 tarball, folder, http url, or git url.
+87 verbose exit [ 1, true ]

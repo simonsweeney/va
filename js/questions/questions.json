@@ -1,0 +1,115 @@
+[
+    {
+        question: "Can you imagine a world without countries?",
+        left: {
+            answer: "Yes",
+            uniform: "noise1Amount",
+            min: .1,
+            max: .5
+        },
+        right: {
+            answer: "No",
+            uniform: "wave1Amount",
+            min: .1,
+            max: .3
+        }
+    },{
+        question: "Is the idea of a continent like Europe…",
+        left: {
+            answer: "Ridiculous",
+            uniform: "speed1",
+            min: .1,
+            max: 1
+        },
+        right: {
+            answer: "Inspiring",
+            uniform: "scale1",
+            min: 0,
+            max: 1
+        }
+    }, {
+        question: "The world should be more…",
+        left: {
+            answer: "Call of Duty",
+            uniform: "colorOffset",
+            min: .5,
+            max: 1
+        },
+        right: {
+            answer: "KPop",
+            uniform: "colorOffset",
+            min: .5,
+            max: 0
+        }
+    },{
+        question: "You would have a romantic relationship with a robot.",
+        left: {
+            answer: "Yes",
+            uniform: "scale2",
+            min: 0,
+            max: 1
+        },
+        right: {
+            answer: "No",
+            uniform: "speed2",
+            min: .1,
+            max: 1
+        }
+    },{
+        question: "I live in my...",
+        left: {
+            answer: "Internet",
+            uniform: "spikesAmount",
+            min: 0,
+            max: 1
+        },
+        right: {
+            answer: "Country",
+            uniform: "divideAmount",
+            min: 0,
+            max: .4
+        }
+    },{
+        question: "Are you...",
+        left: {
+            answer: "Bauhaus",
+            uniform: "absBlend",
+            min: 0,
+            max: 1
+        },
+        right: {
+            answer: "Surrealism",
+            uniform: "twistAmount",
+            min: 0,
+            max: 1
+        }
+    },{
+        question: "Your personality is because of...",
+        left: {
+            answer: "Origins",
+            uniform: "rotateX",
+            min: 0,
+            max: 1
+        },
+        right: {
+            answer: "Choices",
+            uniform: "marbleAmount",
+            min: 0,
+            max: 1
+        }
+    },{
+        question: "Art & Design has the power to eradicate fear.",
+        left: {
+            answer: "Agree",
+            uniform: "oiliness",
+            min: 0,
+            max: 1
+        },
+        right: {
+            answer: "Disagree",
+            uniform: "rotateY",
+            min: 0,
+            max: 1
+        }
+    },
+]
