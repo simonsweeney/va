@@ -1,5 +1,5 @@
 var BlobViewer = require('../blob/viewer');
-var randomParams = require('../questions/random');
+var randomParams = require('../sandbox/random');
 var tween = require('../lib/tween');
 
 module.exports = function ( res ) {

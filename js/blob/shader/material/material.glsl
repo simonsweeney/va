@@ -9,8 +9,7 @@
 #pragma glslify: oil = require(./lib/oil.glsl)
 #pragma glslify: glitter = require(./lib/glitter.glsl)
 #pragma glslify: twist = require(../field/lib/twist);
-#pragma glslify: envMap = require(./lib/envMap);
-
+#pragma glslify: spherize = require(./lib/spherize);
 
 const float PI = 3.14159;
 const float PI2 = PI * 2.;
@@ -19,6 +18,7 @@ uniform float oiliness;
 uniform samplerCube marbleTexture;
 uniform sampler2D backgroundTexture;
 uniform float marbleAmount;
+uniform float pointsAmount;
 
 //uniform sampler2D texture;
 
@@ -53,7 +53,7 @@ vec3 render( in vec3 p, const in vec3 eye, const in vec2 mouse, float ao ) {
     
     vec3 rotP = p;
     vec3 n = normal( p );
-    vec3 pn = normalize( normalize(p) + n );
+    vec3 pn = normalize( normalize(p * .1) + n );
     vec3 rotN = n;
     
     #if rotateX_nonzero
@@ -136,9 +136,23 @@ vec3 render( in vec3 p, const in vec3 eye, const in vec2 mouse, float ao ) {
     
     vec3 color = emissive + diffuse * light;
     
-    float points = smoothstep( .85, 1., 1. - length( mod( pn.xy * 14., vec2(1.) ) - .5 ) );
+    #if pointsAmount_nonzero
     
-    color = mix( color, vec3(1.), points );
+        float pointsThreshold = .95 - pointsAmount * .15;
+
+        float points = smoothstep( pointsThreshold, 1.,
+            1. - length(
+                mod(
+                    spherize( pn.xy ) * 25.,
+                vec2(1.) )
+            - .5 )
+        );
+        
+        points *= ( 1. - abs(n.z) ) * 2.;
+        
+        color = mix( color, vec3(1.), points );
+        
+    #endif
     
     #if backgroundTexture_nonzero
         

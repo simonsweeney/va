@@ -50,6 +50,9 @@ canvas {
   left: 0;
   width: 300px;
   z-index: 10;
+  text-align: center;
+  height: 100%;
+  overflow: scroll;
   display: none; }
   .sliders input {
     width: 100%; }
@@ -294,15 +297,15 @@ canvas {
             transform: rotate(0deg);
     opacity: 1; }
   66% {
-    -webkit-transform: rotate(-90deg);
-            transform: rotate(-90deg); }
+    -webkit-transform: rotate(90deg);
+            transform: rotate(90deg); }
   80% {
     opacity: 1; }
   90% {
     opacity: 0; }
   100% {
-    -webkit-transform: rotate(-90deg);
-            transform: rotate(-90deg);
+    -webkit-transform: rotate(90deg);
+            transform: rotate(90deg);
     opacity: 0; } }
 
 @keyframes turn {
@@ -315,15 +318,15 @@ canvas {
             transform: rotate(0deg);
     opacity: 1; }
   66% {
-    -webkit-transform: rotate(-90deg);
-            transform: rotate(-90deg); }
+    -webkit-transform: rotate(90deg);
+            transform: rotate(90deg); }
   80% {
     opacity: 1; }
   90% {
     opacity: 0; }
   100% {
-    -webkit-transform: rotate(-90deg);
-            transform: rotate(-90deg);
+    -webkit-transform: rotate(90deg);
+            transform: rotate(90deg);
     opacity: 0; } }
   @media screen and (max-width: 768px) and (orientation: portrait) {
     .landscape-prompt {

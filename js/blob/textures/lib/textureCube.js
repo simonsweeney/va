@@ -132,11 +132,25 @@ function createTextureArray ( gl, sources, format, type, size ) {
   return new TextureCube(gl, texture, format, type)
 }
 
-function createTextureCube (gl, data, size) {
+function createTextureCube ( gl, data ) {
 //   format = format || gl.RGBA
 //   type = type || gl.UNSIGNED_BYTE
 //   return createTextureDOM(gl, data, format, type)
+
     var format = gl.RGBA;
     var type = gl.UNSIGNED_BYTE;
-    return createTextureArray( gl, data, format, type, size );
+
+    if ( data.pos.x.dtype ) { // is ndarray
+    
+        var size = data.pos.x.shape[0];
+        
+        return createTextureArray( gl, data, format, type, size );
+        
+    } else {
+        
+        return createTextureDOM( gl, data, format, type );
+        
+    }
+
+    
 }

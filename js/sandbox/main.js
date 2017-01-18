@@ -1,19 +1,10 @@
 var BlobViewer = require('../blob/viewer')
 var scale = require('../lib/scale');
+var questions = require('../questions.json');
 
 var sliderContainer = document.createElement('div');
 sliderContainer.classList.add('sliders');
-
-function createInput( onChange ){
-    var slider = document.createElement('input');
-    slider.setAttribute('type', 'range');
-    slider.setAttribute('min', -1);
-    slider.setAttribute('max', 1);
-    slider.setAttribute('step', .0001);
-    slider.addEventListener('input', () => onChange( slider.value ) );
-    onChange(0);
-    return slider;
-}
+document.body.appendChild(sliderContainer);
 
 function uniformSetter1 ( blob, question ) {
     
@@ -34,7 +25,21 @@ function uniformSetter2 ( blob, question ) {
     var { uniform: leftUniform, min: leftMin, max: leftMax } = question.left;
     var { uniform: rightUniform, min: rightMin, max: rightMax } = question.right;
     
-    
+    return function ( value ) {
+        
+        if ( value < 0 ) {
+            
+            blob.setUniform( rightUniform, 'default' );
+            blob.setUniform( leftUniform, scale( value, 0, -1, leftMin, leftMax ) );
+            
+        } else {
+            
+            blob.setUniform( leftUniform, 'default' );
+            blob.setUniform( rightUniform, scale( value, 0, 1, rightMin, rightMax ) );
+            
+        }
+        
+    }
     
 }
 
@@ -52,9 +57,31 @@ function uniformSetter ( blob, question ) {
     
 }
 
-function createSlider ( question ) {
+function createInput( onChange ){
+    var slider = document.createElement('input');
+    slider.setAttribute('type', 'range');
+    slider.setAttribute('min', -1);
+    slider.setAttribute('max', 1);
+    slider.setAttribute('step', .0001);
+    slider.addEventListener('input', () => onChange( slider.value ) );
+    return slider;
+}
+
+function createLabel( question ) {
     
+    var p = document.createElement('p');
+    p.innerHTML = `${question.question}<br>${question.left.answer} ↔ ${question.right.answer}`;
+    return p;
     
+}
+
+function addSlider ( blob, question ) {
+    
+    var setter = uniformSetter( blob, question )
+    var label = createLabel( question );
+    var input = createInput( setter );
+    sliderContainer.appendChild( label );
+    sliderContainer.appendChild( input );
     
 }
 
@@ -64,10 +91,12 @@ module.exports = function ( res ) {
     
     var params = {
         marbleTexture: cube,
-        camera: [ 0, 0, -6 ]
+        camera: [ 0, 0, -5 ]
     }
     
     var blob = new BlobViewer( gl, 2/3, params );
+    
+    questions.forEach( q => addSlider( blob, q ) );
     
     function onResize () {
         

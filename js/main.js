@@ -3,6 +3,7 @@ var init = require('./ui/init');
 
 var home = require('./home/main');
 var questions = require('./questions/main');
+var view = require('./view/main');
 var sandbox = require('./sandbox/main');
 
 init().then( res => {
@@ -16,6 +17,10 @@ init().then( res => {
     } else if( $body.hasClass('questions') ) {
         
         return questions( res );
+        
+    } else if ( $body.hasClass('view') ) {
+        
+        return view( res );
         
     } else if ( $body.hasClass('sandbox') ) {
         

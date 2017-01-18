@@ -1,6 +1,6 @@
 require('./fit');
 var Promise = require('promise');
-var questions = require('./questions.json');
+var questions = require('../questions.json');
 var BlobSlider = require('../blob/slider');
 var $ = require('jquery');
 var scale = require('../lib/scale');

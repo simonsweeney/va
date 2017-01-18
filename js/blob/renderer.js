@@ -98,6 +98,11 @@ var uniformTypes = {
     marbleAmount: {
         type:'float',
         define: true
+    },
+    
+    pointsAmount: {
+        type: 'float',
+        define: true
     }
     
 }
@@ -236,6 +241,8 @@ module.exports = class BlobRenderer {
             
             var ret = clone(u);
             
+            ret.default = u.value;
+            
             if ( ret.name in uniforms ) {
                 
                 let value = uniforms[ ret.name ];
@@ -332,6 +339,8 @@ module.exports = class BlobRenderer {
         
         if ( prevValue === value ) return;
         
+        if ( value === 'default' ) value = u.default;
+        
         u.value = value;
         
         if ( u.define ) {
@@ -360,6 +369,8 @@ module.exports = class BlobRenderer {
             
             // https://www.wolframalpha.com/input/?i=x+*+(+t+-+z+)+%3D+y+*+(+t+-+w+)
             var st = ( -now * prevValue + now * value + prevValue * startTime ) / value;
+            
+            if ( value === 0 ) st = 0;
             
             this.setUniform( startTimeName, st );
             

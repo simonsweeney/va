@@ -1,4 +1,4 @@
-var questions = require('./questions.json');
+var questions = require('../questions.json');
 var scale = require('../lib/scale');
 
 module.exports = function () {

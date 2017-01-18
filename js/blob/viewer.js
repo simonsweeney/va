@@ -1,13 +1,20 @@
 var createContext = require('gl-context');
 var BlobRenderer = require('./renderer');
 var normalizeEvent = require("./lib/normalizeEvent");
-var hasTouch = require('./lib/hasTouch')
+var hasTouch = require('./lib/hasTouch');
+var parseAnswers = require('./lib/parseAnswers');
 
 var BLOB_Z = 6;
 
 module.exports = class BlobViewer extends BlobRenderer {
     
     constructor ( gl, renderScale = 1, initalParams = { colorOffset: .5 } ) {
+        
+        if ( Array.isArray( initalParams ) ) {
+            
+            initalParams = parseAnswers( initalParams );
+            
+        }
         
         super( gl, initalParams );
         

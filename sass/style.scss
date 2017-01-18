@@ -75,6 +75,9 @@ canvas {
     left: 0;
     width: 300px;
     z-index: 10;
+    text-align: center;
+    height: 100%;
+    overflow: scroll;
     input {
         width: 100%;
     }
@@ -359,7 +362,7 @@ canvas {
                 opacity: 1;
             }
             66%{
-                transform: rotate(-90deg);
+                transform: rotate(90deg);
             }
             80%{
                 opacity: 1;
@@ -368,7 +371,7 @@ canvas {
                 opacity: 0;
             }
             100% {
-                transform: rotate(-90deg);
+                transform: rotate(90deg);
                 opacity: 0;
             }
             

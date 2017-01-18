@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    
+    <script>
+        
+        var a = () => Math.random() * 2 - 1;
+        
+        var testData = {
+            answers: [a(), a(), a(), a(), a(), a(), a(), a()],
+            age: 200,
+            location: 'Toilet'
+        }
+        
+        $.ajax({
+            url: 'http://95.85.37.181/save',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify( testData ),
+            success: data => {
+                
+                console.log(data);
+                
+            },
+            error: data => {
+                
+                console.log(data);
+                
+            }
+        });
+        
+    </script>
+    
+</body>
+</html>
