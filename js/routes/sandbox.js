@@ -85,16 +85,17 @@ function addSlider ( blob, question ) {
     
 }
 
-module.exports = function ( res ) {
+module.exports = function ( ctx, next ) {
     
-    var [ gl, [cube, ] ] = res;
+    var gl = ctx.gl;
+    var envMap = ctx.envMap;
     
     var params = {
-        marbleTexture: cube,
+        marbleTexture: envMap,
         camera: [ 0, 0, -5 ]
     }
     
-    var blob = new BlobViewer( gl, 2/3, params );
+    var blob = new BlobViewer( gl, params );
     
     questions.forEach( q => addSlider( blob, q ) );
     
@@ -110,5 +111,7 @@ module.exports = function ( res ) {
     blob.tick();
     
     document.body.appendChild( blob.canvas );
+    
+    next();
     
 }

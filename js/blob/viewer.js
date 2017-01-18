@@ -8,13 +8,13 @@ var DPR = window.devicePixelRatio || 1;
 
 module.exports = class BlobViewer extends BlobRenderer {
     
-    constructor ( gl, renderScale = 1, initalParams = { colorOffset: .5 } ) {
+    constructor ( gl, initalParams = { colorOffset: .5 } ) {
         
         super( gl, initalParams );
         
         this.canvas = gl.canvas;
         
-        this.renderScale = renderScale;
+        this.renderScale = 1;
         
         this.frameTimer = new FPSTracker( 45, .5 / DPR, quality => {
             this.renderScale = quality;

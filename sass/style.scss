@@ -294,6 +294,7 @@ canvas {
     line-height: 1.5;
     opacity: 0;
     transition: opacity .5s;
+    z-index: 999;
     
     &.visible {
         opacity: 1;

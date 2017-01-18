@@ -1,10 +1,15 @@
 var BlobViewer = require('../blob/viewer');
-var randomParams = require('../sandbox/random');
+var randomParams = require('../lib/randomParams');
 var tween = require('../lib/tween');
+var template = require('./lib/template')( require('./home.html') );
 
-module.exports = function ( res ) {
+module.exports = function ( ctx, next ) {
     
-    var [ gl, [cube, title] ] = res;
+    template();
+    
+    var gl = ctx.gl;
+    var cube = ctx.envMap;
+    var title = ctx.title;
     
     var params = randomParams();
     params.marbleTexture = cube;
@@ -12,7 +17,7 @@ module.exports = function ( res ) {
     params.camera = [0, 0, -5];
     params.subtract = 2;
     
-    var blob = new BlobViewer( gl, 2/3, params );
+    var blob = new BlobViewer( gl, params );
     
     function onResize () {
         
@@ -28,5 +33,7 @@ module.exports = function ( res ) {
     tween( 1.4, 0, 2500, 'quadInOut', x => blob.setUniform( 'subtract', x ) );
     
     document.body.appendChild( blob.canvas );
+    
+    next();
     
 }

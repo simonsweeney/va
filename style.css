@@ -242,7 +242,8 @@ canvas {
   line-height: 1.5;
   opacity: 0;
   -webkit-transition: opacity .5s;
-  transition: opacity .5s; }
+  transition: opacity .5s;
+  z-index: 999; }
   .modal.visible {
     opacity: 1; }
   .modal__inner {

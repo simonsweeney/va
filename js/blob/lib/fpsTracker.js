@@ -21,13 +21,15 @@ module.exports = class FPSTracker {
             
             var avg = 1000 / this.getAverage();
             
-            this.quality *= 1 + ( avg - this.target ) / this.target;
+            var quality = this.quality * (1 + ( avg - this.target ) / this.target);
             
-            this.quality = clamp( this.quality, this.min, 1 );
+            quality = clamp( quality, this.min, 1 );
             
-            this.setter( this.quality );
+            if ( Math.abs( quality - this.quality ) > .1 ) {
+                this.quality = quality;
+                this.setter( this.quality );
+            }
             
-            console.log( this.quality, avg );
             
             this.head -= this.size;
             

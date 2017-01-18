@@ -1,25 +1,59 @@
-require('./fit');
 var Promise = require('promise');
 var questions = require('../questions.json');
+var introModal = require('./lib/introModal')
 var BlobSlider = require('../blob/slider');
 var $ = require('jquery');
 var scale = require('../lib/scale');
 var tween = require('../lib/tween');
 var PREFIXED_TRANSFORM = require('detectcss').prefixed('transform');
+var template = require('./lib/template')( require('./questions.html') );
 
-module.exports = function( gl, quality, assets ) {
+var BASE_SIZE = 200;
+var TARGET_WIDTH = .3;
+
+module.exports = function( ctx, next ) {
+    
+    template();
+    
+    var gl = ctx.gl;
+    var envMap = ctx.envMap;
+    
+    var slider = new BlobSlider( gl, {
+        subtract: 1.4,
+        colorOffset: .5,
+        marbleTexture: envMap,
+        camera: [0, 0, -6]
+    });
+    
+    introModal()
+        .then(() => askQuestions( slider ) );
+    
+    next();
+    
+}
+
+function fitText( $elements ) {
+    
+  var targetWidth = TARGET_WIDTH * window.innerWidth;
+  
+  $elements.css( 'fontSize', BASE_SIZE );
+  
+  var leftWidth = $elements.eq(0).width();
+  var rightWidth = $elements.eq(1).width();
+  
+  var scale = targetWidth / Math.max( leftWidth, rightWidth );
+  
+  $elements.css( 'fontSize', BASE_SIZE * scale );
+
+    
+}
+
+function askQuestions( slider ) {
     
     return new Promise( resolve => {
         
         var answers = questions.map( () => 0 );
         var currQuestion = 0;
-        
-        var slider = new BlobSlider( gl, quality, {
-            subtract: 1.4,
-            colorOffset: .5,
-            marbleTexture: assets[0],
-            camera: [0, 0, -6]
-        });
         
         var $body = $('body');
         var $question = $('.question')
@@ -43,7 +77,7 @@ module.exports = function( gl, quality, assets ) {
         
         function onResize() {
             
-            $answers.fit();
+            fitText( $answers );
             slider.setSize( window.innerWidth, window.innerHeight );
             
         }
@@ -61,7 +95,7 @@ module.exports = function( gl, quality, assets ) {
             $leftAnswer.text( q.left.answer );
             $rightAnswer.text( q.right.answer );
             
-            $answers.fit();
+            fitText( $answers );
             
             slider.enable();
             
