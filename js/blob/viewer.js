@@ -1,20 +1,14 @@
 var createContext = require('gl-context');
 var BlobRenderer = require('./renderer');
+var FPSTracker = require('./lib/fpsTracker');
 var normalizeEvent = require("./lib/normalizeEvent");
 var hasTouch = require('./lib/hasTouch');
-var parseAnswers = require('./lib/parseAnswers');
 
-var BLOB_Z = 6;
+var DPR = window.devicePixelRatio || 1;
 
 module.exports = class BlobViewer extends BlobRenderer {
     
     constructor ( gl, renderScale = 1, initalParams = { colorOffset: .5 } ) {
-        
-        if ( Array.isArray( initalParams ) ) {
-            
-            initalParams = parseAnswers( initalParams );
-            
-        }
         
         super( gl, initalParams );
         
@@ -22,6 +16,11 @@ module.exports = class BlobViewer extends BlobRenderer {
         
         this.renderScale = renderScale;
         
+        this.frameTimer = new FPSTracker( 45, .5 / DPR, quality => {
+            this.renderScale = quality;
+            this.setSize();
+        });
+
         if ( !hasTouch() ) {
             
             var boundOnMouseMove =  normalizeEvent( this.onMouseMove.bind(this) );
@@ -43,10 +42,10 @@ module.exports = class BlobViewer extends BlobRenderer {
         
     }
     
-    setSize ( w, h ) {
+    setSize () {
         
-        var w = window.innerWidth * this.renderScale;
-        var h = window.innerHeight * this.renderScale;
+        var w = window.innerWidth * this.renderScale * DPR;
+        var h = window.innerHeight * this.renderScale * DPR;
         
         super.setSize( w, h );
         
@@ -70,6 +69,8 @@ module.exports = class BlobViewer extends BlobRenderer {
             
             var now = Date.now() - start;
             var dT = now - then;
+            
+            this.frameTimer.push( dT );
             
             this.render( now, dT );
             
