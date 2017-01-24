@@ -1,5 +1,4 @@
 var BlobViewer = require("./viewer");
-var normalizeEvent = require("./lib/normalizeEvent");
 
 module.exports = class BlobSlider extends BlobViewer {
     
@@ -8,42 +7,53 @@ module.exports = class BlobSlider extends BlobViewer {
         super( gl, renderScale, params );
         
         this.value = 0;
-        this.dragging = false;
+        this.sliderInputDown = false;
         this.dragX = 0;
         this.prevDragXs = [];
         this.velocity = 0;
         this.max = 1;
-        this.interactive = false;
-
-        this.bound = {
-            onDown: normalizeEvent( this.onDown.bind(this) ),
-            onMove: normalizeEvent( this.onMove.bind(this) ),
-            onUp: normalizeEvent( this.onUp.bind(this) )
-        }
+        
+        this.sliderBoundFns = this.getBoundFunctions({
+            onDown: this.sliderOnDown,
+            onUp: this.sliderOnUp,
+            onMove: this.sliderOnMove
+        })
         
     }
     
-    enable () {
+    enableSlider () {
         
-        this.bind('down');
+        this.bind( 'down', this.sliderBoundFns );
+        
+        if( this.dragHandlers === 0 ) this.canvas.classList.add('draggable');
+        
+        this.dragHandlers++;
+        
+        this.sliderEnabled = true;
         
     }
     
-    disable () {
+    disableSlider () {
         
-        if ( this.dragging ) {
+        if ( this.sliderInputDown ) {
             
-            this.unbind('move');
-            this.unbind('up');
-            this.dragging = false;
+            this.unbind('move', this.sliderBoundFns);
+            this.unbind('up', this.sliderBoundFns);
+            this.sliderInputDown = false;
             
         } else {
             
-            this.unbind('down');
+            this.unbind('down', this.sliderBoundFns);
             
         }
         
         this.velocity = 0;
+        
+        this.dragHandlers--;
+        
+        if ( this.dragHandlers === 0 ) this.canvas.classList.remove('draggable');
+        
+        this.sliderEnabled = false;
         
     }
     
@@ -53,22 +63,22 @@ module.exports = class BlobSlider extends BlobViewer {
         
     }
     
-    onDown ( point ) {
-        
-        this.dragging = true;
+    sliderOnDown ( point ) {
+
+        this.sliderInputDown = true;
         this.prevDragXs = [];
         this.pushPrev( point.x );
         this.velocity = 0;
         
         this.canvas.classList.add('dragging');
         
-        this.unbind('down');
-        this.bind('move');
-        this.bind('up');
+        this.unbind('down', this.sliderBoundFns);
+        this.bind('move', this.sliderBoundFns);
+        this.bind('up', this.sliderBoundFns);
         
     }
     
-    onMove ( point ) {
+    sliderOnMove ( point ) {
         
         var delta = point.x - this.prevDragXs[ this.prevDragXs.length - 1 ].x;
         
@@ -76,17 +86,15 @@ module.exports = class BlobSlider extends BlobViewer {
         
         this.set( Math.min( Math.max( this.value + valueDelta, -1 ), 1 ) );
         
-        this.doCamera();
-        
         this.pushPrev( point.x );
         
     }
     
-    onUp ( point ) {
+    sliderOnUp ( point ) {
         
         this.pushPrev( point.x );
         
-        this.dragging = false;
+        this.sliderInputDown = false;
         
         this.canvas.classList.remove('dragging');
         
@@ -121,9 +129,9 @@ module.exports = class BlobSlider extends BlobViewer {
         
         }
         
-        this.unbind('move');
-        this.unbind('up');
-        this.bind('down');
+        this.unbind('move', this.sliderBoundFns);
+        this.unbind('up', this.sliderBoundFns);
+        this.bind('down', this.sliderBoundFns);
         
     }
     
@@ -134,58 +142,9 @@ module.exports = class BlobSlider extends BlobViewer {
         var v = this.value + this.velocity * dT;
         v = Math.max( Math.min( v, 1 ), -1 );
         
-        this.set( v );
-        this.doCamera();
-        
+        if ( v !== this.value ) this.set( v );
+
         super.render( now, dT );
-        
-    }
-    
-    bind ( event ) {
-        
-        switch ( event ) {
-            
-            case 'down':
-                this.canvas.addEventListener('mousedown', this.bound.onDown);
-                this.canvas.addEventListener('touchstart', this.bound.onDown);
-                break;
-                
-            case 'move':
-                this.canvas.addEventListener( 'mousemove', this.bound.onMove );
-                this.canvas.addEventListener( 'touchmove', this.bound.onMove );
-                break;
-
-            case 'up':
-                this.canvas.addEventListener( 'mouseup', this.bound.onUp );
-                this.canvas.addEventListener( 'mouseleave', this.bound.onUp );
-                this.canvas.addEventListener( 'touchend', this.bound.onUp );
-                break;
-                
-        }
-        
-    }
-    
-    unbind ( event ) {
-        
-        switch ( event ) {
-            
-            case 'down':
-                this.canvas.removeEventListener('mousedown', this.bound.onDown);
-                this.canvas.removeEventListener('touchstart', this.bound.onDown);
-                break;
-                
-            case 'move':
-                this.canvas.removeEventListener( 'mousemove', this.bound.onMove );
-                this.canvas.removeEventListener( 'touchmove', this.bound.onMove );
-                break;
-
-            case 'up':
-                this.canvas.removeEventListener( 'mouseup', this.bound.onUp );
-                this.canvas.removeEventListener( 'mouseleave', this.bound.onUp );
-                this.canvas.removeEventListener( 'touchend', this.bound.onUp );
-                break;
-                
-        }
         
     }
     
@@ -197,13 +156,17 @@ module.exports = class BlobSlider extends BlobViewer {
         
         this.max = this.screenToBlobDepth( { x: maxPx, y: 0 } ).x;
         
-        this.doCamera();
+        if ( this.sliderEnabled ) this.doCamera();
         
     }
     
     set ( value ) {
         
         this.value = value;
+        
+        this.doCamera();
+        
+        if ( this.onChange ) this.onChange( value );
         
     }
     
@@ -235,7 +198,8 @@ module.exports = class BlobSlider extends BlobViewer {
         
         var x = this.value * -this.max;
         
-        this.setUniform( 'camera', [ x, 0, -6 ] )
+        this.setUniform( 'camera', [ -x, 0, -6 ] )
+        this.setUniform( 'target', [ -x, 0, 0 ] )
         
     }
     

@@ -12,7 +12,7 @@ module.exports = function normalizeEvent( fn ) {
             
         } else {
             
-            fn( { x: event.clientX, y: event.clientY } );
+            fn( { x: event.offsetX, y: event.offsetY } );
             
         }
         

@@ -19,8 +19,8 @@ uniform samplerCube marbleTexture;
 uniform sampler2D backgroundTexture;
 uniform float marbleAmount;
 uniform float pointsAmount;
-
-//uniform sampler2D texture;
+uniform float light1Intensity;
+uniform float light2Intensity;
 
 vec3 pointLight(
     vec3 p,
@@ -56,19 +56,19 @@ vec3 render( in vec3 p, const in vec3 eye, const in vec2 mouse, float ao ) {
     vec3 pn = normalize( normalize(p * .1) + n );
     vec3 rotN = n;
     
-    #if rotateX_nonzero
+    if ( rotateX > 0. ) {
     
         rotP = rotateVec3( p, vec3( 1., 0, 0.), time );
         rotN = rotateVec3( n, vec3( 1., 0, 0.), time );
     
-    #endif
+    }
     
-    #if rotateY_nonzero
+    if ( rotateY > 0. ) {
     
         rotP = rotateVec3( p, vec3( sin(time / 2.33), 1, 0.), time );
         rotN = rotateVec3( n, vec3( sin(time / 2.33), 1, 0.), time );
     
-    #endif
+    }
     
     //n = normalize( n - noiseNormal( normalize(cross(n, p)).xy * 5. ) * .25 );
     
@@ -81,7 +81,7 @@ vec3 render( in vec3 p, const in vec3 eye, const in vec2 mouse, float ao ) {
     float lng = longitude( rotN ) / (PI / 2.);
     vec2 latLng = vec2( abs( lat ), lng );
     
-    #if marbleAmount_nonzero
+    if ( marbleAmount > 0. ) {
     
         float marbleOpacity = clamp( marbleAmount * 20., 0., 1.);
         vec3 marbleSample = rotP + rotN;
@@ -90,18 +90,18 @@ vec3 render( in vec3 p, const in vec3 eye, const in vec2 mouse, float ao ) {
         
         marble = 1. - smoothstep( marbleAmount - 1.2, marbleAmount, marbleTex );
     
-    #endif
+    }
     
     vec3 diffuse = mix(baseColor, marbleColor, marble);
     
     //vec3 bump = crinklyNormal(p + rotN);
     //n = normalize( n + bump * .2 );
     
-    vec3 emissive = vec3(.7, .7, .7) * 0.;
+    vec3 emissive = mix( vec3(0.), vec3( 1. - clamp( length( p ) * .8, 0., 1.) ), 0.);
     vec3 ambient = mix( mix( vec3(.5), vec3(.3), marbleAmount), vec3(.1), marble);// * ao;
     float roughness = mix( mix( .15, 0., marbleAmount), .3, marble);
-    float specularity = mix(.05, .5, marble);
-    vec3 specColor = mix(vec3(.3), vec3(0.), marble);
+    float specularity = mix(.03, .5, marble);
+    vec3 specColor = mix(vec3(1.), vec3(0.), marble);
     
     // vec3 rotP = rotateVec3( p, vec3(.2, .9, .4), time );
     // float stripes = step( .8, fract( rotP.x * 10. ) );
@@ -111,9 +111,11 @@ vec3 render( in vec3 p, const in vec3 eye, const in vec2 mouse, float ao ) {
     vec3 mouseLightPosition = vec3( camera.xy + mouse * 2., -3. );
     vec3 oilColor = vec3(0.);
     
-    #if oiliness_nonzero
+    if ( oiliness > 0. ) {
+        
         oilColor = oil( p, n, mouseLightPosition ) * 3.;
-    #endif
+        
+    }
     
     vec3 mouseLightColor = mix( vec3(.8, .8, .8), oilColor, oiliness );
     //vec3 mouseLightPosition = vec3( mouse * 8., -4. + length(mouse) * 4. );
@@ -123,8 +125,8 @@ vec3 render( in vec3 p, const in vec3 eye, const in vec2 mouse, float ao ) {
     vec3 light1Color = vec3( 1.4, .8, .9 ) * .5;
     light += pointLight( p, n, eye, light1Position, light1Color, roughness, specularity, specColor );
     
-    vec3 light2Position = vec3(-1., -1., -.7);
-    vec3 light2Color = vec3( .7, .2, .1 ) * .5;
+    vec3 light2Position = mix( vec3(-1., -1., -.7), vec3(-5., -3., -2.), 0.);
+    vec3 light2Color = mix( vec3( .35, .1, .05 ), vec3( 0., 0., 1. ), 0.);
     light += pointLight( p, n, eye, light2Position, light2Color, roughness, specularity, specColor );
     
     //vec2 points2 = vec2(1.) - step( vec2(.1), mod( pn.xy * vec2(20.), vec2(2.) ) );
@@ -136,7 +138,7 @@ vec3 render( in vec3 p, const in vec3 eye, const in vec2 mouse, float ao ) {
     
     vec3 color = emissive + diffuse * light;
     
-    #if pointsAmount_nonzero
+    if ( pointsAmount > 0. ) {
     
         float pointsThreshold = .95 - pointsAmount * .15;
 
@@ -152,9 +154,9 @@ vec3 render( in vec3 p, const in vec3 eye, const in vec2 mouse, float ao ) {
         
         color = mix( color, vec3(1.), points );
         
-    #endif
+    }
     
-    #if backgroundTexture_nonzero
+    #if backgroundTexture_exists
         
         vec3 refracted = refract( -eye, pn, 1.333 );
         refracted = refract( refracted, vec3( pn.xy, -pn.z ), .75 );

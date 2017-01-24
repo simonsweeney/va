@@ -6,15 +6,11 @@
 #pragma glslify: longitude = require(../lib/longitude.glsl);
 #pragma glslify: wave = require(./lib/wave.glsl, time=time);
 #pragma glslify: rotateVec3 = require(../../lib/rotateVec3.glsl);
+#pragma glslify: modPolar = require(../lib/modPolar.glsl);
 
 const float radius = 1.4;
 
 uniform float subtract;
-
-uniform float rotateX;
-uniform float rotateXStartTime;
-uniform float rotateY;
-uniform float rotateYStartTime;
 
 uniform float noise1Amount;
 uniform float wave1Amount;
@@ -38,6 +34,8 @@ uniform float hollowAmount;
 uniform float twistAmount;
 uniform float absBlend;
 
+uniform float symmetryAmount;
+
 float invPow( float x, float exponent ) {
     
     return 1. - pow( 1. - x, exponent );
@@ -59,56 +57,69 @@ float field ( vec3 p ) {
     
     //p = rotate(p, .5);
     
+    
+    // #if symmetryAmount_nonzero
+        
+        // p = modPolar( p, 10. );
+        
+    // #endif
+    
     vec3 pRotated = p;
     
-    #if rotateX_nonzero
+    if ( rotateX > 0. ) {
     
-        float rotateXTime = max( time - rotateXStartTime, 0. ) * rotateX;
-    
-        pRotated = rotateVec3( p, vec3( 1., 0, 0.), rotateXTime );
+        float rotateXTime = max( time - rotateXStartTime, 0. );
+        float rotateXProgress = rotateXTime * rotateX;
         
-    #endif
+        pRotated = rotateVec3( p, vec3( 1., 0., 0.), rotateXProgress );
+        
+    }
     
-    #if rotateY_nonzero
+    if ( rotateY > 0. ) {
     
         float rotateYTime = max( time - rotateYStartTime, 0. );
     
         pRotated = rotateVec3( p, vec3( sin( rotateYTime / 2.33), 1, 0.), rotateYTime );
     
-    #endif
+    }
     
     vec3 pTwist = pRotated;
     
-    #if twistAmount_nonzero
+    if ( twistAmount > 0. ) {
     
         pTwist = twist( pRotated, twistAmount * 3.14 );
     
-    #endif
+    }
     
     float sphere = sdSphere( p, radius );
     
     float majorDistort = 0.;
     
-    #if noise1Amount_nonzero
+    if ( noise1Amount > 0. ) {
     
         float noiseSpeed1Time = max( time - speed1StartTime, 0. );
         float noiseSpeed2Time = max( time - speed2StartTime, 0. );
         
         vec3 noise1Time = vec3( noiseSpeed1Time, noiseSpeed2Time, 0. );
         
+        //vec3 noise1Scale = vec3( .42 + scale1 * .4, .42 + scale2 * .4, (scale1 + scale2) / 2. );
+        
         vec3 noise1Scale = vec3( .42 + scale1 * .4, .42 + scale2 * .4, (scale1 + scale2) / 2. );
-        vec3 noise1Speed = vec3( speed1, speed2, 0. );
+        
+        //noise1Scale *= 10. * pow(1. - noise1Amount, 4.);
+        vec3 noise1Speed = vec3( speed1, speed2, 0. );// * noise1Scale;
         
         majorDistort = snoise3( vec3( (pTwist * noise1Scale ) + noise1Time * noise1Speed ) ) * noise1Amount;
         
-    #endif
+    }
     
-    #if wave1Amount_nonzero
+    if ( wave1Amount > 0. ) {
     
         float waveSpeed1Time = max( time - speed1StartTime, 0. );
         float waveSpeed2Time = max( time - speed2StartTime, 0. );
         
         vec3 wave1Scale = vec3( .5 + scale1 * .7, .5 + scale2 * .7, .5 );
+        //wave1Scale *= 5. * pow(1. - wave1Amount, 4.);
         
         float wave1Speed1 = speed1;
         float wave1Speed2 = speed2;
@@ -120,7 +131,19 @@ float field ( vec3 p ) {
     
         majorDistort = (lngWave1 + lngWave2) * wave1Amount;
         
-    #endif
+        // float amp = wave1Amount * .5;
+        // float freq = 2.;
+        
+        // for ( int i = 0; i < 7; i++ ) {
+            
+        //     majorDistort += sin( pTwist.x * freq + waveSpeed1Time * freq * speed1 ) * amp;
+            
+        //     freq *= 1. + 2. * (1. - wave1Amount);
+        //     amp *= .5 * wave1Amount;
+            
+        // }
+        
+    }
     
     sphere += mix( majorDistort, abs(majorDistort), absBlend );
     
@@ -148,25 +171,25 @@ float field ( vec3 p ) {
     
     // #endif
     
-    #if spikesAmount_nonzero
+    // #if spikesAmount_nonzero
         
-        float pi = 3.141592;
+    //     float pi = 3.141592;
         
-        float freq = 3.141 + (6.281 * (1. - spikesAmount));
+    //     float freq = 3.141 + (6.281 * (1. - spikesAmount));
         
-        float spikesLongitude = longitude( pTwist ) + time * .3;
-        float spikesLatitude = latitude( pTwist );
+    //     float spikesLongitude = longitude( pTwist ) + time * .3;
+    //     float spikesLatitude = latitude( pTwist );
         
-        float lngSpikes = ramp( mod( spikesLongitude * freq, 1.) );
-        float latSpikes = ramp( mod( spikesLatitude * freq, 1.) );
+    //     float lngSpikes = ramp( mod( spikesLongitude * freq, 1.) );
+    //     float latSpikes = ramp( mod( spikesLatitude * freq, 1.) );
         
-        //float spikeWave = sin( clamp( (spikesLatitude - pi * .25) * 3., pi * -.5, pi * 1.5) ) * .5 + .5;
+    //     //float spikeWave = sin( clamp( (spikesLatitude - pi * .25) * 3., pi * -.5, pi * 1.5) ) * .5 + .5;
         
-        float spikeWave = pow( sin( length(pRotated.xy) * 10. + time * .3 ) * .5 + .5, 3.);
+    //     float spikeWave = pow( sin( length(pRotated.xy) * 10. + time * .3 ) * .5 + .5, 3.);
         
-        sphere -= latSpikes * lngSpikes * pow( spikesAmount, 2. ) * .2 * spikeWave;
+    //     sphere -= latSpikes * lngSpikes * pow( spikesAmount, 2. ) * .2 * spikeWave;
         
-    #endif
+    // #endif
     
     // #if hollowAmount_nonzero
         
@@ -174,7 +197,7 @@ float field ( vec3 p ) {
         
     // #endif
     
-    #if divideAmount_nonzero
+    if ( divideAmount > 0. ) {
     
         float dividePosition = sin(time * .3);
     
@@ -196,7 +219,7 @@ float field ( vec3 p ) {
         
         sphere = max( -gap, sphere );
     
-    #endif
+    }
     
     // #if gridAmount_nonzero
     

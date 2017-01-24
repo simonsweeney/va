@@ -3,6 +3,7 @@ var BlobRenderer = require('./renderer');
 var FPSTracker = require('./lib/fpsTracker');
 var normalizeEvent = require("./lib/normalizeEvent");
 var hasTouch = require('./lib/hasTouch');
+var clamp = require('./lib/clamp');
 
 var DPR = window.devicePixelRatio || 1;
 
@@ -14,12 +15,22 @@ module.exports = class BlobViewer extends BlobRenderer {
         
         this.canvas = gl.canvas;
         
-        this.renderScale = 1;
+        this.quality = 1 / DPR;
         
-        this.frameTimer = new FPSTracker( 45, .5 / DPR, quality => {
-            this.renderScale = quality;
-            this.setSize();
+        this.frameTimer = new FPSTracker( 30, .5 / DPR, this.setQuality.bind(this) );
+        
+        this.cameraBoundFns = this.getBoundFunctions({
+            onDown: this.cameraOnDown,
+            onUp: this.cameraOnUp,
+            onMove: this.cameraOnMove
         });
+        
+        this.cameraInclination = Math.PI / 2;
+        this.cameraAzimuth = Math.PI / -2;
+        this.prevCameraInput = { x: 0, y: 0 };
+        this.cameraDistance = Math.abs( initalParams.camera[ 2 ] );
+        
+        this.dragHandlers = 0;
 
         if ( !hasTouch() ) {
             
@@ -28,13 +39,11 @@ module.exports = class BlobViewer extends BlobRenderer {
             
         }
         
-        document.body.appendChild( this.canvas );
-        
     }
     
     onMouseMove ( point ) {
         
-        point.y = window.innerHeight - point.y;
+        point.y = this.windowHeight - point.y;
         
         point = this.windowToLocal( point );
         
@@ -42,18 +51,29 @@ module.exports = class BlobViewer extends BlobRenderer {
         
     }
     
-    setSize () {
+    setSize ( w, h ) {
         
-        var w = window.innerWidth * this.renderScale * DPR;
-        var h = window.innerHeight * this.renderScale * DPR;
+        this.windowWidth = w;
+        this.windowHeight = h;
         
-        super.setSize( w, h );
+        var sw = w * this.quality * DPR;
+        var sh = h * this.quality * DPR;
+        
+        super.setSize( sw, sh );
+        
+    }
+    
+    setQuality ( quality ) {
+        
+        this.quality = quality;
+        
+        this.setSize( this.windowWidth, this.windowHeight );
         
     }
     
     render ( now, dT ) {
         
-        this.setUniform( 'time', now / 1000 );
+        this.setUniform( 'time', this.uniformKeys.time.value + dT / 1000 );
         
         super.render();
         
@@ -81,6 +101,156 @@ module.exports = class BlobViewer extends BlobRenderer {
         }
         
         ticker();
+        
+    }
+    
+    getBoundFunctions ( fns ) {
+        
+        var ret = {};
+        
+        for ( var name in fns ) {
+            
+            ret[ name ] = normalizeEvent( fns[ name ].bind( this ) );
+            
+        }
+        
+        return ret;
+        
+    }
+    
+    bind ( event, fns ) {
+        
+        switch ( event ) {
+            
+            case 'down':
+                this.canvas.addEventListener('mousedown', fns.onDown);
+                this.canvas.addEventListener('touchstart', fns.onDown);
+                break;
+                
+            case 'move':
+                this.canvas.addEventListener( 'mousemove', fns.onMove );
+                this.canvas.addEventListener( 'touchmove', fns.onMove );
+                break;
+
+            case 'up':
+                this.canvas.addEventListener( 'mouseup', fns.onUp );
+                this.canvas.addEventListener( 'mouseleave', fns.onUp );
+                this.canvas.addEventListener( 'touchend', fns.onUp );
+                break;
+                
+        }
+        
+    }
+    
+    unbind ( event, fns ) {
+        
+        switch ( event ) {
+            
+            case 'down':
+                this.canvas.removeEventListener('mousedown', fns.onDown);
+                this.canvas.removeEventListener('touchstart', fns.onDown);
+                break;
+                
+            case 'move':
+                this.canvas.removeEventListener( 'mousemove', fns.onMove );
+                this.canvas.removeEventListener( 'touchmove', fns.onMove );
+                break;
+
+            case 'up':
+                this.canvas.removeEventListener( 'mouseup', fns.onUp );
+                this.canvas.removeEventListener( 'mouseleave', fns.onUp );
+                this.canvas.removeEventListener( 'touchend', fns.onUp );
+                break;
+                
+        }
+        
+    }
+    
+    enableCameraControls () {
+        
+        this.bind( 'down', this.cameraBoundFns );
+        
+        if( this.dragHandlers === 0 ) this.canvas.classList.add('draggable');
+        
+        this.dragHandlers++;
+        
+    }
+    
+    disableCameraControls () {
+        
+        if ( this.cameraInputDown ) {
+            
+            this.unbind('move', this.cameraBoundFns);
+            this.unbind('up', this.cameraBoundFns);
+            this.cameraInputDown = false;
+            
+        } else {
+            
+            this.unbind('down', this.cameraBoundFns);
+            
+        }
+        
+        this.dragHandlers--;
+        
+        if ( this.dragHandlers === 0 ) this.canvas.classList.remove('draggable');
+        
+    }
+    
+    cameraOnDown ( point ) {
+        
+        this.cameraInputDown = true;
+        document.body.classList.add('dragging-camera');
+        this.canvas.classList.add('dragging');
+        
+        this.prevCameraInput = this.windowToLocal( point );
+        
+        this.unbind('down', this.cameraBoundFns);
+        this.bind('move', this.cameraBoundFns);
+        this.bind('up', this.cameraBoundFns);
+        
+    }
+    
+    cameraOnMove ( point ) {
+        
+        point = this.windowToLocal( point );
+        
+        var dx = this.prevCameraInput.x - point.x;
+        var dy = this.prevCameraInput.y - point.y;
+        
+        var r = this.cameraDistance;
+        
+        this.cameraAzimuth += dx * -2;
+        this.cameraInclination = clamp( this.cameraInclination + dy * 2, .01, 2 );
+        
+        var sinInc = Math.sin( this.cameraInclination );
+        var cosInc = Math.cos( this.cameraInclination );
+        var sinAz = Math.sin( this.cameraAzimuth );
+        var cosAz = Math.cos( this.cameraAzimuth );
+        
+        this.setUniform( 'camera', [
+            r * sinInc * cosAz,
+            r * cosInc,
+            r * sinInc * sinAz
+        ])
+        
+        console.log( r * sinInc * cosAz,
+            r * cosInc,
+            r * sinInc * sinAz )
+        
+        this.prevCameraInput = point;
+        
+    }
+    
+    cameraOnUp () {
+        
+        this.cameraInputDown = false;
+        
+        document.body.classList.remove('dragging-camera');
+        this.canvas.classList.remove('dragging');
+        
+        this.unbind('move', this.cameraBoundFns);
+        this.unbind('up', this.cameraBoundFns);
+        this.bind('down', this.cameraBoundFns);
         
     }
     

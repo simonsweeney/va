@@ -25,11 +25,10 @@ module.exports = class FPSTracker {
             
             quality = clamp( quality, this.min, 1 );
             
-            if ( Math.abs( quality - this.quality ) > .1 ) {
+            //if ( Math.abs( quality - this.quality ) > .05 ) {
                 this.quality = quality;
                 this.setter( this.quality );
-            }
-            
+            //}
             
             this.head -= this.size;
             

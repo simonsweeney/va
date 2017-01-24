@@ -123,12 +123,12 @@ function createTextureDOM (gl, sources, format, type) {
 
 function createTextureArray ( gl, sources, format, type, size ) {
   var texture = initTexture(gl)
-  gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, format, size, size, 0, format, type, sources.pos.x)
-  gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, 0, format, size, size, 0, format, type, sources.pos.y)
-  gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, format, size, size, 0, format, type, sources.pos.z)
-  gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, format, size, size, 0, format, type, sources.neg.x)
-  gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, format, size, size, 0, format, type, sources.neg.y)
-  gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, format, size, size, 0, format, type, sources.neg.z)
+  gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, format, size, size, 0, format, type, sources.pos.x.data)
+  gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, 0, format, size, size, 0, format, type, sources.pos.y.data)
+  gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, format, size, size, 0, format, type, sources.pos.z.data)
+  gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, format, size, size, 0, format, type, sources.neg.x.data)
+  gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, format, size, size, 0, format, type, sources.neg.y.data)
+  gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, format, size, size, 0, format, type, sources.neg.z.data)
   return new TextureCube(gl, texture, format, type)
 }
 
@@ -136,7 +136,7 @@ function createTextureCube ( gl, data ) {
 //   format = format || gl.RGBA
 //   type = type || gl.UNSIGNED_BYTE
 //   return createTextureDOM(gl, data, format, type)
-
+    
     var format = gl.RGBA;
     var type = gl.UNSIGNED_BYTE;
 

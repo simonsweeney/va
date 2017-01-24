@@ -11,7 +11,7 @@ var map = require('lodash/map');
 var clone = require('lodash/clone');
 
 var createTexture = require('gl-texture2d');
-var createTextureCube = require('gl-texture-cube');
+var createTextureCube = require('./textures/lib/textureCube');
 var createColorTexture = require('./textures/colors');
 var createMarbleTexture = require('./textures/marble/marble');
 
@@ -25,6 +25,8 @@ var uniformTypes = {
     mouse: 'vec2',
     time: 'float',
     camera: 'vec3',
+    target: 'vec3',
+    planeDistance: 'float',
     colorTexture: 'sampler2D',
     marbleTexture: 'samplerCube',
     backgroundTexture: {
@@ -36,22 +38,18 @@ var uniformTypes = {
     
     rotateX: {
         type: 'float',
-        define: true,
         timed: true
     },
     rotateY: {
         type: 'float',
-        define: true,
         timed: true
     },
     
     noise1Amount: {
-        type: 'float',
-        define: true
+        type: 'float'
     },
     wave1Amount: {
         type: 'float',
-        define: true
     },
     
     scale1: 'float',
@@ -74,15 +72,8 @@ var uniformTypes = {
     },
     absBlend: 'float',
     
-    divideAmount: {
-        type: 'float',
-        define: true
-    },
-    spikesAmount: {
-        type: 'float',
-        define: true
-    },
-    
+    divideAmount: 'float',
+
     gridAmount: 'float',
     hollowAmount: 'float',
     
@@ -91,19 +82,13 @@ var uniformTypes = {
         value: .5
     },
     
-    oiliness: {
-        type: 'float',
-        define: true
-    },
-    marbleAmount: {
-        type:'float',
-        define: true
-    },
+    oiliness: 'float',
     
-    pointsAmount: {
-        type: 'float',
-        define: true
-    }
+    marbleAmount: 'float',
+    
+    pointsAmount: 'float',
+    
+    symmetryAmount: 'float'
     
 }
 
@@ -115,15 +100,14 @@ var defaultUniforms = map( uniformTypes, (value, key) => {
         
         ret.type = value;
         ret.value = zero( ret.type );
-        ret.timed = ret.define = false;
+        ret.timed = false;
         
     } else {
         
         ret.type = value.type;
         ret.value = value.value || zero( value.type );
         ret.timed = value.timed || false;
-        ret.define = value.define || false;
-        
+
     }
     
     return ret;
@@ -138,7 +122,6 @@ defaultUniforms.forEach( u => {
             name: u.name + "StartTime",
             type: 'float',
             timed: false,
-            define: false,
             value: 0
         });
         
@@ -187,18 +170,14 @@ function getDefines ( uniforms ) {
     
     uniforms.forEach( u => {
         
-        if ( !u.define ) return;
-        
-        var nonzero;
-        
         if ( u.type.indexOf('sampler') > -1 ) {
-            nonzero = u.value !== null;
-        } else {
-            nonzero = !isZero( u.value );
+            
+            var exists = u.value !== null;
+            
+            defines[ u.name + '_exists' ] = exists ? 1 : 0;
+            
         }
-        
-        defines[ u.name + '_nonzero' ] = nonzero ? 1 : 0;
-        
+
     });
     
     return defines;
@@ -227,10 +206,6 @@ module.exports = class BlobRenderer {
     
         this.gl = gl;
         this.uniforms = uniforms || {};
-        
-        // if ( !this.uniforms.marbleTexture ) {
-        //     this.uniforms.marbleTexture = createMarbleTexture( gl );
-        // }
         
         this.gl.disable( gl.DEPTH_TEST );
         this.gl.enable( gl.BLEND );
@@ -275,12 +250,21 @@ module.exports = class BlobRenderer {
         this.uniformKeys.colorTexture.value = textures++;
         this.uniformKeys.colorTexture.tex = createColorTexture( gl );
         
+        this.uniformKeys.planeDistance.value = this.uniformKeys.camera.value[ 2 ] / -2;
+        
         this.defines = getDefines( this.uniforms );
+        this.defines.renderShadow = 1;
+        this.defines.renderBlob = 1;
         this.definesNeedUpdate = true;
         
         this.uniforms.forEach( u => this.setUniform( u.name, u.value ) );
         
         this.draw = fillScreenForever( this.gl );
+        
+        this.width = 0;
+        this.height = 0;
+        this.windowWidth = 0;
+        this.windowHeight = 0;
         
         // this.clearShader = createShader( gl, vertex, "void main(){ gl_FragColor = vec4(1., 1., 1., .3); }");
         
@@ -291,6 +275,8 @@ module.exports = class BlobRenderer {
         if ( this.definesNeedUpdate ) {
             
             var frag = prependDefines( this.defines, fragment );
+            
+            console.log( frag );
             
             if ( !this.shader ) {
                 
@@ -323,10 +309,6 @@ module.exports = class BlobRenderer {
             
         }
         
-        // this.gl.blendFunc( this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA );
-        // this.clearShader.bind();
-        // this.draw();
-        
         this.draw();
         
     }
@@ -343,22 +325,22 @@ module.exports = class BlobRenderer {
         
         u.value = value;
         
-        if ( u.define ) {
+        // if ( u.define ) {
             
-            var defineName = name + '_nonzero';
-            var defineIsZero = this.defines[ defineName ] !== 1;
-            var valueIsZero = isZero( value );
+        //     var defineName = name + '_nonzero';
+        //     var defineIsZero = this.defines[ defineName ] !== 1;
+        //     var valueIsZero = isZero( value );
             
-            if ( defineIsZero !== valueIsZero ) {
+        //     if ( defineIsZero !== valueIsZero ) {
                 
-                this.defines[ defineName ] = valueIsZero ? 0 : 1;
-                this.definesNeedUpdate = true;
+        //         this.defines[ defineName ] = valueIsZero ? 0 : 1;
+        //         //this.definesNeedUpdate = true;
                 
-                if ( valueIsZero && u.timed ) u.startTime = 0;
+        //         if ( valueIsZero && u.timed ) u.startTime = 0;
                 
-            }
+        //     }
             
-        }
+        // }
         
         if ( u.timed ) {
             
@@ -388,6 +370,9 @@ module.exports = class BlobRenderer {
     
     setSize ( w, h ) {
         
+        this.width = w;
+        this.height = h;
+        
         resizeGL( this.gl, w, h );
         
         this.gl.viewport( 0, 0, w, h );
@@ -398,8 +383,8 @@ module.exports = class BlobRenderer {
     
     getScale () {
         
-        var ww = window.innerWidth;
-        var wh = window.innerHeight;
+        var ww = this.windowWidth;
+        var wh = this.windowHeight;
         
         return Math.max( 2 / ww, 2 / wh );
         
@@ -422,8 +407,8 @@ module.exports = class BlobRenderer {
         
         point = this.screenToLocal( point, scale );
         
-        var w = window.innerWidth * scale;
-        var h = window.innerHeight * scale;
+        var w = this.windowWidth * scale;
+        var h = this.windowHeight * scale;
         
         point.x -= 1;
         point.y -= 1;
