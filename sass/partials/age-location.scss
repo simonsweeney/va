@@ -1,0 +1,75 @@
+.buttons_age-location {
+    
+    #age {
+        width: 3em;
+    }
+    
+    span {
+        display: inline-block;
+        margin-right: .5em;
+    }
+    
+    input {
+        
+        user-select: auto;
+        border-radius: 0;
+        box-shadow: none;
+        font-size: inherit;
+        font-weight: inherit;
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        border-bottom: 1px solid black;
+        outline: none;
+        margin: 0;
+        padding: 0;
+        background: transparent;
+        padding: .25em .5em;
+        vertical-align: baseline !important;
+        
+        &::placeholder {
+            color: #999;
+        }
+        
+        -moz-appearance:textfield;
+        &::-webkit-outer-spin-button,
+        &::-webkit-inner-spin-button{
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+    }
+    
+    .twitter-typeahead {
+        
+        input {
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+        
+        width: 10em;
+        
+        .tt-hint {
+            color: #999;
+        }
+        
+        .tt-menu {
+            display: none !important;
+        }
+        
+        .tt-suggestion {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            width: 100%;
+            transition: transform .2s;
+            &.tt-cursor {
+                transform: translateX(1em);
+            }
+        }
+        
+    }
+    
+}

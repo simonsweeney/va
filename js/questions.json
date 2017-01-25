@@ -5,55 +5,93 @@
             "answer": "Yes",
             "uniform": "noise1Amount",
             "min": 0.1,
-            "max": 0.5
+            "max": 0.5,
+            "extremeMax": 1.6
         },
         "right": {
             "answer": "No",
             "uniform": "wave1Amount",
             "min": 0.1,
-            "max": 0.3
+            "max": 0.3,
+            "extremeMax": 0.3
         }
     },{
         "question": "Is the idea of a continent like Europe…",
         "left": {
             "answer": "Ridiculous",
             "uniform": "speed1",
+            "baseMin": 0.1,
             "min": 0.1,
-            "max": 1
+            "max": 1,
+            "extremeMax": 0.2
         },
         "right": {
             "answer": "Inspiring",
             "uniform": "scale1",
+            "min": 0.1,
+            "max": 1,
+            "extremeMax": 2
+        }
+    },{
+        "question": "The world should be more…",
+        "left": {
+            "answer": "#CallOfDuty",
+            "uniform": "light1Intensity",
+            "min": 0,
+            "max": 1,
+            "extremeMax": 1.5
+        },
+        "right": {
+            "answer": "#KPop",
+            "uniform": "baseGreen",
             "min": 0,
             "max": 1
         }
-    }, {
-        "question": "The world should be more…",
+    },{
+        "question": "Your generation will solve the problem of climate change.",
         "left": {
-            "answer": "Call of Duty",
-            "uniform": "colorOffset",
-            "min": 0.5,
+            "answer": "Agree",
+            "uniform": "baseBlue",
+            "min": 0,
             "max": 1
         },
         "right": {
-            "answer": "KPop",
-            "uniform": "colorOffset",
-            "min": 0.5,
-            "max": 0
+            "answer": "Disagree",
+            "uniform": "light2Intensity",
+            "min": 0,
+            "max": 1,
+            "extremeMax": 1.5
+        }
+    },{
+        "question": "The world needs more…",
+        "left": {
+            "answer": "Anarchy",
+            "uniform": "baseRed",
+            "min": 0,
+            "max": 1
+        },
+        "right": {
+            "answer": "Control",
+            "uniform": "haloAmount",
+            "min": 0,
+            "max": 1
         }
     },{
         "question": "You would have a romantic relationship with a robot.",
         "left": {
             "answer": "Yes",
             "uniform": "scale2",
-            "min": 0,
-            "max": 1
+            "min": 0.1,
+            "max": 1,
+            "extremeMax": 1.5
         },
         "right": {
             "answer": "No",
             "uniform": "speed2",
-            "min": .1,
-            "max": 1
+            "baseMin": 0.1,
+            "min": 0.1,
+            "max": 1,
+            "extremeMax": 0.2
         }
     },{
         "question": "I live in my...",
@@ -61,13 +99,15 @@
             "answer": "Internet",
             "uniform": "pointsAmount",
             "min": 0,
-            "max": 1
+            "max": 1,
+            "extremeMax": 1.2
         },
         "right": {
             "answer": "Country",
             "uniform": "divideAmount",
             "min": 0,
-            "max": 0.4
+            "max": 0.4,
+            "extremeMax": 0.8
         }
     },{
         "question": "Are you...",
@@ -75,21 +115,25 @@
             "answer": "Bauhaus",
             "uniform": "absBlend",
             "min": 0,
-            "max": 1
+            "max": 1,
+            "extremeMax": 1.2
         },
         "right": {
             "answer": "Surrealism",
             "uniform": "twistAmount",
             "min": 0,
-            "max": 1
+            "max": 1,
+            "extremeMax": 2
         }
     },{
         "question": "Your personality is because of...",
         "left": {
             "answer": "Origins",
             "uniform": "rotateX",
+            "baseMin": 0.1,
             "min": 0,
-            "max": 1
+            "max": 1,
+            "extremeMax": 0.1
         },
         "right": {
             "answer": "Choices",
@@ -103,13 +147,16 @@
             "answer": "Agree",
             "uniform": "oiliness",
             "min": 0,
-            "max": 1
+            "max": 1,
+            "extremeMax": 1.5
         },
         "right": {
             "answer": "Disagree",
             "uniform": "rotateY",
+            "baseMin": 0.1,
             "min": 0,
-            "max": 1
+            "max": 1,
+            "extremeMax": 0.3
         }
-    },
+    }
 ]

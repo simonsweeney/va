@@ -1,10 +1,10 @@
 var answerToAnimator = require('./answerToAnimator');
 
-module.exports = function ( questions, fromParams, toAnswers, setter ) {
+module.exports = function ( questions, fromParams, toAnswers, setter, extreme ) {
     
     var fns = questions.map( (question, i) => {
         
-        return answerToAnimator( question, fromParams, toAnswers[ i ], setter );
+        return answerToAnimator( question, fromParams, toAnswers[ i ], setter, extreme );
         
     })
     

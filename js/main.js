@@ -1,8 +1,11 @@
+//require('es6-shim');
+
+var $ = require('jquery');
 var page = require('page');
 
 var detectTouch = require('./routes/common/detectTouch');
 var initGL = require('./routes/common/initGL');
-var simulaneously = require('./routes/common/simultaneously');
+var simultaneously = require('./routes/common/simultaneously');
 var api = require('./routes/common/api');
 var loadAssets = require('./routes/common/loadAssets');
 var loadImage = require('./routes/common/loadImage');
@@ -14,46 +17,33 @@ var load = loadAssets({
     envMap: loadTextureCube('assets/marble')
 })
 
-var home = require('./routes/home');
-var questions = require('./routes/questions');
-var single = require('./routes/single');
-var sandbox = require('./routes/sandbox');
+var loadWithAPI = simultaneously( load, api );
+
+var home = require('./routes/home/home');
+var questions = require('./routes/questions/questions');
+var single = require('./routes/single/single');
+var list = require('./routes/list/list');
+var sandbox = require('./routes/sandbox/sandbox');
+
+// page.base('/collecting_europe_240117');
 
 page( '*', detectTouch, initGL );
 
-page( '/', load, home, done );
+page( '/', loadWithAPI, home, done );
+
+page( '/all', loadWithAPI, home, done );
 
 page( '/questions', load, questions, done );
 
+page( '/archive', loadWithAPI, list, done );
+
 page( '/sandbox', load, sandbox, done );
 
-page( /^\/(\d+)/, simulaneously( load, api ), single, done );
+page( /^\/(\d+)/, loadWithAPI, single, done );
+
+page( '*', () => $('.loading').text('404') );
 
 page({
     click: false,
     popstate: false
-})
-
-// init().then( res => {
-    
-//     var $body = $('body');
-    
-//     if( $body.hasClass('home') ) {
-        
-//         return home( res );
-        
-//     } else if( $body.hasClass('questions') ) {
-        
-//         return questions( res );
-        
-//     } else if ( $body.hasClass('view') ) {
-        
-//         return view( res );
-        
-//     } else if ( $body.hasClass('sandbox') ) {
-        
-//         return sandbox( res );
-        
-//     }
-    
-// });
+});

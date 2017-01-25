@@ -1,0 +1,37 @@
+.title {
+    position: fixed;
+    top: $margin-small * 2;
+    left: $margin-small;
+    right: $margin-small;
+    bottom: $margin-small * 8;
+    background-image: url(assets/title.svg);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+    
+    @include fade-in-on-load;
+    
+    @include tablet {
+        top: $margin-large;
+        left: $margin-large * 2;
+        right: $margin-large * 2;
+        bottom: $margin-large * 6;
+    }
+    
+}
+
+.logos {
+    position: fixed;
+    height: $margin-small;
+    bottom: $margin-small;
+    left: 50%;
+    transform: translateX(-50%);
+    
+    @include fade-in-on-load;
+    
+    @include tablet {
+        bottom: $margin-large;
+        height: $margin-large * .75;
+    }
+    
+}

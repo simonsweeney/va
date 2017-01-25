@@ -31,7 +31,9 @@ module.exports = function answerToParams ( question, answer, extreme = false, ob
         
     } else if ( answer === 0 ) {
         
-        obj[ question.left.uniform ] = obj[ question.right.uniform ] = 0;
+        obj[ question.left.uniform ] = question.left.baseMin || 0;
+        
+        obj[ question.right.uniform ] = question.right.baseMin || 0;
         
         return obj;
         
@@ -43,7 +45,7 @@ module.exports = function answerToParams ( question, answer, extreme = false, ob
         newMin = getMin( question.left );
         newMax = getMax( question.left );
         
-        obj[ question.right.uniform ] = 0;
+        obj[ question.right.uniform ] = question.left.baseMin || 0;
         
     } else {
     
@@ -53,7 +55,7 @@ module.exports = function answerToParams ( question, answer, extreme = false, ob
         newMin = getMin( question.right );
         newMax = getMax( question.right );
         
-        obj[ question.left.uniform ] = 0;
+        obj[ question.left.uniform ] = question.left.baseMin || 0;
         
     }
     

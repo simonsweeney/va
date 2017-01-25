@@ -1,0 +1,48 @@
+.question {
+    position: fixed;
+    left: 50%;
+    width: 90%;
+    transform: translateX(-50%);
+    max-width: 800px;
+    text-align: center;
+    opacity: 0;
+    top: $margin-small;
+    font-size: 1.5em;
+    @include tablet {
+        top: $margin-large;
+        font-size: 2em;
+    }
+    
+    p {
+        margin: 0;
+        
+        &.small {
+            margin-top: .5em;
+            font-size: .5em;
+            color: #999;
+        }
+        
+    }
+    
+
+}
+
+.answer {
+
+    position: fixed;
+    opacity: 0;
+    top: 50%;
+    text-align: center;
+    font-size: 200px;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+
+    &_left {
+        left: 20%;
+    }
+    
+    &_right {
+        left: 80%;
+    }
+  
+}

@@ -88,7 +88,15 @@ var uniformTypes = {
     
     pointsAmount: 'float',
     
-    symmetryAmount: 'float'
+    symmetryAmount: 'float',
+    
+    light1Intensity: 'float',
+    light2Intensity: 'float',
+    haloAmount: 'float',
+    
+    baseRed: 'float',
+    baseGreen: 'float',
+    baseBlue: 'float'
     
 }
 
@@ -250,7 +258,7 @@ module.exports = class BlobRenderer {
         this.uniformKeys.colorTexture.value = textures++;
         this.uniformKeys.colorTexture.tex = createColorTexture( gl );
         
-        this.uniformKeys.planeDistance.value = this.uniformKeys.camera.value[ 2 ] / -2;
+        this.uniformKeys.planeDistance.value = this.uniformKeys.camera.value[ 2 ] / 2;
         
         this.defines = getDefines( this.uniforms );
         this.defines.renderShadow = 1;
@@ -275,8 +283,6 @@ module.exports = class BlobRenderer {
         if ( this.definesNeedUpdate ) {
             
             var frag = prependDefines( this.defines, fragment );
-            
-            console.log( frag );
             
             if ( !this.shader ) {
                 

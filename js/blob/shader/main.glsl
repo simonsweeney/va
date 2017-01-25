@@ -18,7 +18,7 @@ uniform float rotateYStartTime;
 
 const float fov = 1.4142135624; // 45 degrees
 
-#pragma glslify: field = require(./field/field.glsl,time=time,rotateX=rotateX,rotateY=rotateY,rotateXStartTime=rotateXStartTime,rotateYStartTime=rotateYStartTime)
+#pragma glslify: field = require(./field/field.glsl,time=time,rotateX=rotateX,rotateY=rotateY,rotateXStartTime=rotateXStartTime,rotateYStartTime=rotateYStartTime,mouse=mouse,camera=camera)
 
 #pragma glslify: material = require( ./material/material.glsl,time=time,field=field,camera=camera,background=background,rotateX=rotateX,rotateY=rotateY,rotateXStartTime=rotateXStartTime,rotateYStartTime=rotateYStartTime)
 
@@ -33,11 +33,11 @@ void main () {
     
     vec2 p = contain( gl_FragCoord.xy );
     
-    vec2 m = mouse;
-    
     mat3 camMat = lookAt( camera, target, 0. );
     vec3 rayDirection = normalize( camMat * vec3( p, fov ) );
     vec3 collision;
+    
+    vec3 m = camMat * vec3( mouse, -3. );
     
     int steps;
     
@@ -50,7 +50,7 @@ void main () {
         
         float ao = float(steps - 1) / float(RAYMARCH_STEPS - 1);
         
-        ao = pow( 1. - smoothstep( .05, 1., ao ), 2.) * .65 + .35;
+        ao = pow( 1. - smoothstep( .05, .9, ao ), 2.) * .65 + .35;
         
         color = material( collision, -rayDirection, m, ao );
         alpha = 1.;

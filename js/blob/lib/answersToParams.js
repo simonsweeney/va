@@ -4,7 +4,7 @@ var answersToArray = require('./answersToArray');
 
 module.exports = function( questions, answers, extreme ) {
     
-    if ( isPlainObject( answers ) ) {
+    if ( !Array.isArray( answers ) ) {
         
         answers = answersToArray( answers );
         

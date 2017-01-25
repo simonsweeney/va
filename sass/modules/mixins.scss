@@ -1,0 +1,14 @@
+@mixin fade-in-on-load( $cls: '' ) {
+    
+    #{$cls} & {
+    
+        opacity: 0;
+        transition: opacity 2.5s 1s;
+    
+    }
+    
+    #{$cls}.loaded & {
+        opacity: 1;
+    }
+    
+}

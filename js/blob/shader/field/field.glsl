@@ -53,6 +53,11 @@ float ramp( float x ) {
     
 }
 
+float smin( float a, float b, float k ) {
+    float h = clamp( 0.5+0.5*(b-a)/k, 0.0, 1.0 );
+    return mix( b, a, h ) - k*h*(1.0-h);
+}
+
 float field ( vec3 p ) {
     
     //p = rotate(p, .5);
@@ -106,7 +111,7 @@ float field ( vec3 p ) {
         
         vec3 noise1Scale = vec3( .42 + scale1 * .4, .42 + scale2 * .4, (scale1 + scale2) / 2. );
         
-        //noise1Scale *= 10. * pow(1. - noise1Amount, 4.);
+        noise1Scale *= 10. * pow(1. - noise1Amount, 4.);
         vec3 noise1Speed = vec3( speed1, speed2, 0. );// * noise1Scale;
         
         majorDistort = snoise3( vec3( (pTwist * noise1Scale ) + noise1Time * noise1Speed ) ) * noise1Amount;
@@ -239,6 +244,22 @@ float field ( vec3 p ) {
     // #endif
     
     sphere += subtract;
+    
+    //vec3 mouseLightPosition = mouse * 2.;
+    
+    //sphere = min( sphere, sdSphere( p - mouseLightPosition, .1 ) );
+    
+    //sphere = min( sphere, sdSphere( p - vec3(0., 3., 0.), .1 ) );
+    
+    //sphere = min( sphere, sdSphere( p - vec3(-1., -1., .7), .1 ) );
+    
+    float orbitRadius = sin( time * 3.74 ) * .5 + 1.;
+    
+    vec3 orbit = vec3( sin(-time) * orbitRadius, cos(-time) * orbitRadius, 0. );
+    
+    float moon = sdSphere( p + orbit, .1 );
+    
+    //sphere = smin(sphere, moon, 1.);
     
     return sphere;
     

@@ -9,7 +9,7 @@ vec3 gradientSample( vec3 p, float angle ) {
     float colorCoord = colorOffset * (15./16.) + length(rotP.xy) * .05;
     float colorAmount = clamp( abs( (colorOffset - .5) * 2. ) * 10., 0., 1.);
     vec3 gradientColor = texture2D( colorTexture, vec2(colorCoord, 0.) ).rgb;
-    return mix( vec3(1.), gradientColor, colorAmount );
+    return mix( vec3(.5), gradientColor, colorAmount );
     
 }
 

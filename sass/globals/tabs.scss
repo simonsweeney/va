@@ -1,0 +1,39 @@
+.tabs {
+    position: fixed;
+    top: $margin-small;
+    left: 50%;
+    z-index: 10;
+    transform: translateX(-50%);
+    
+    @include tablet {
+        top: $margin-large;
+        font-size: 1.5em;
+    }
+    
+    @include desktop {
+        font-size: 2em;
+    }
+    
+    @include fade-in-on-load;
+    
+}
+
+.tab {
+    float: left;
+    padding: .25em .5em;
+    border-left: 1px solid black;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    color: #999;
+    transition: color .2s;
+    cursor: pointer;
+    
+    &_active {
+        color: black;
+    }
+    
+    &:last-child {
+        border-right: 1px solid black;
+    }
+    
+}

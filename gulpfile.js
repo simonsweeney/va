@@ -34,7 +34,7 @@ b.transform(stringify, {
 })
 
 b.transform('glslify');
-// b.transform( 'babelify', { presets: ['es2015'] } )
+b.transform( 'babelify', { presets: ['es2015'] } )
 
 gulp.task( 'js', bundle );
 
@@ -44,7 +44,7 @@ function bundle () {
 		.on('error', gutil.log.bind(gutil, 'Browserify Error:'))
 		.pipe( source('./bundle.js') )
 		.pipe( buffer() )
-		// .pipe( streamify( uglify() ) )
+		.pipe( streamify( uglify() ) )
 	    .pipe(gulp.dest('./'));
 		
 }

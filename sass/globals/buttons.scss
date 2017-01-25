@@ -1,0 +1,145 @@
+.buttons {
+    
+    position: fixed;
+    bottom: $margin-small;
+    left: 50%;
+    z-index: 10;
+    font-size: 1em;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    
+    @include tablet {
+        bottom: $margin-large;
+        font-size: 1.5em;
+    }
+    
+    @include desktop {
+        font-size: 2em;
+    }
+    
+    body:not(.questions) & {
+    
+        transition: opacity .5s .5s;
+        opacity: 0;
+    
+    }
+    
+    body.loaded:not(.questions) & {
+    
+        opacity: 1;
+    
+    }
+    
+    .home & {
+        
+        bottom: $margin-small * 3;
+        
+        @include tablet {
+            bottom: $margin-large * 3;
+        }
+        
+    }
+    
+    &_hidden {
+        display: none;
+    }
+    
+    .loaded &_fade-out {
+        opacity: 0;
+        pointer-events: none;
+    }
+    
+    &__text {
+        position: absolute;
+        bottom: .25em;
+        display: inline-block;
+        width: auto;
+        transform: translate(-50%, 0);
+        pointer-events: none;
+    }
+
+}
+
+.drag-helper {
+    
+    @keyframes drag-hint {
+        from {
+            transform: translate(-150%, 0);
+        }
+        to {
+            transform: translate(50%, 0);
+        }
+    }
+    
+    animation: drag-hint 2s ease-in-out infinite alternate;
+
+}
+
+.button {
+    
+    padding: .25em .5em;
+    border: 1px solid black;
+    display: inline-block;
+    cursor: pointer;
+    white-space: nowrap;
+    
+    &_disabled {
+        
+        color: #999;
+        cursor: default;
+        
+    }
+    
+    &_busy {
+        
+        color: transparent;
+        cursor: wait;
+        position: relative;
+        
+        &:after {
+            content: '';
+            position: absolute;
+            width: .75em;
+            height: .75em;
+            top: 50%;
+            left: 50%;
+            border-radius: 50%;
+            border-top: 1px solid black;
+            border-left: 1px solid transparent;
+            border-right: 1px solid transparent;
+            border-bottom: 1px solid transparent;
+            animation: spin 1.5s linear infinite;
+            transform-origin: 50% 50%;
+            
+            @keyframes spin {
+                from {
+                    transform: translate(-50%, -50%) rotate(0deg);
+                }
+                to {
+                    transform: translate(-50%, -50%) rotate(360deg);
+                }
+            }
+            
+        }
+        
+    }
+    
+    &:nth-child(1) {
+        
+        margin-right: 2em;
+        
+        .buttons_wide & {
+            margin-right: 20vw;
+        }
+        
+        .buttons_no-skip & {
+            margin-right: 0;
+        }
+        
+    }
+    
+    a {
+        text-decoration: none;
+    }
+    
+}

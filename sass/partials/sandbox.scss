@@ -1,0 +1,18 @@
+.sliders {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 300px;
+    z-index: 10;
+    text-align: center;
+    height: 100%;
+    overflow: scroll;
+    input {
+        width: 100%;
+    }
+    display: none;
+    @media screen and (min-width: 768px) {
+        display:block;
+    }
+}
+

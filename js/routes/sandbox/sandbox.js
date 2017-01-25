@@ -1,10 +1,11 @@
-var BlobViewer = require('../blob/viewer')
-var scale = require('../lib/scale');
-var questions = require('../questions.json');
+var $ = require('jquery');
+var BlobViewer = require('../../blob/viewer')
+var scale = require('../../lib/scale');
+var questions = require('../../questions.json');
+var save = require('../lib/save');
+var template = require('../lib/template')( require('./sandbox.html') );
 
-var sliderContainer = document.createElement('div');
-sliderContainer.classList.add('sliders');
-document.body.appendChild(sliderContainer);
+var sliderContainer;
 
 function uniformSetter1 ( blob, question ) {
     
@@ -83,21 +84,29 @@ function addSlider ( blob, question ) {
     sliderContainer.appendChild( label );
     sliderContainer.appendChild( input );
     
+    return input;
+    
 }
 
 module.exports = function ( ctx, next ) {
+    
+    template();
+    
+    sliderContainer = document.createElement('div');
+    sliderContainer.classList.add('sliders');
+    document.body.appendChild(sliderContainer);
     
     var gl = ctx.gl;
     var envMap = ctx.envMap;
     
     var params = {
         marbleTexture: envMap,
-        camera: [ 0, 0, -5 ]
+        camera: [ 0, 0, 5 ]
     }
     
     var blob = new BlobViewer( gl, params );
     
-    questions.forEach( q => addSlider( blob, q ) );
+    var sliders = questions.map( q => addSlider( blob, q ) );
     
     function onResize () {
         
@@ -107,11 +116,43 @@ module.exports = function ( ctx, next ) {
     
     window.addEventListener('resize', onResize);
     
+    blob.enableCameraControls();
     onResize();
     blob.tick();
     
     document.body.appendChild( blob.canvas );
     
     next();
+    
+    $('.button_shuffle').click(() => {
+        
+        sliders.forEach( slider => {
+            
+            slider.value = Math.random() * 2 - 1;
+            
+            var event = new Event( 'input' );
+            
+            slider.dispatchEvent( event );
+            
+        })
+        
+    })
+    
+    $('.button_save').click(() => {
+        
+        var answers = sliders.map( slider => Number(slider.value) );
+        
+        save({
+            answers,
+            age: 0,
+            location: "United Kingdom"
+        })
+        .then( id => {
+            
+            alert('👍🏻 ID:' + id );
+            
+        })
+        
+    })
     
 }

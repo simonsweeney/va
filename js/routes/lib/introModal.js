@@ -13,7 +13,7 @@ module.exports = function () {
         }).then( () => {
             return modal([
                 config.INSTRUCTIONS,
-                // config.WARNING
+                config.WARNING
             ], {
                 "Start" : 1
             })
@@ -24,7 +24,7 @@ module.exports = function () {
         return modal([
             config.INTRO_TEXT,
             config.INSTRUCTIONS,
-            // config.WARNING
+            config.WARNING
         ], {
             "Start": 2/3,
         });

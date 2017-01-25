@@ -1,4 +1,5 @@
 var $ = require('jquery');
+var answersToArray = require('../../blob/lib/answersToArray');
 var { DB_ROOT } = require('../../config');
 
 module.exports = function ( ctx, next ) {

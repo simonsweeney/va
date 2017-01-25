@@ -1,0 +1,255 @@
+.stats {
+    
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 50%;
+    height: 100%;
+    overflow-y: scroll;
+    z-index: 20;
+    pointer-events: none;
+
+    opacity: 0;
+    transition: opacity .2s;
+    
+    .loaded & {
+        opacity: 1;
+    }
+    
+    .no-touch & {
+    
+        &:hover .stat {
+            opacity: .2;
+        }
+    
+    }
+    
+    &__column {
+        
+        pointer-events: visible;
+        
+        .dragging-camera & {
+            pointer-events: none;
+        }
+        
+    }
+    
+    display: none;
+    
+    .dragging-camera & {
+        transition: opacity .2s;
+        opacity: 0;
+    }
+    
+    @include tablet {
+        
+        display: block;
+        
+        width: 100%;
+        padding: 0;
+        
+        &__column {
+            
+            position: absolute;
+            width: 30%;
+            top: 50%;
+            transform: translateY(-50%);
+
+            &_1 {
+                left: 0;
+            }
+            
+            &_2 {
+                right: 0;
+            }
+            
+            @include desktop {
+                width: 30%;
+            }
+            
+        }
+        
+    }
+    
+    p {
+        margin: 0;
+    }
+    
+}
+
+.stat {
+    
+    //border: 1px solid red;
+    position: relative;
+    padding-bottom: $margin-small;
+    padding-right: $margin-small;
+    
+    @include tablet {
+        padding-bottom: $margin-large;
+        padding-right: $margin-large;
+    }
+    
+    @include tablet {
+        font-size: 14px;
+    }
+    
+    @include desktop {
+        font-size: 15px;
+    }
+    
+    transition: opacity .3s;
+    
+    .stats__column_1 & {
+        
+        &:first-child {
+            padding-top: $margin-small;
+            @include tablet {
+                padding-top: $margin-large;
+            }
+        }
+        
+        @include tablet {
+            padding-left: $margin-small;
+        }
+        
+        @include desktop {
+            padding-left: $margin-medium;
+        }
+        
+    }
+    
+    .stats__column_2 & {
+        
+        &:last-child {
+            padding-bottom: $margin-small;
+            @include tablet {
+                padding-bottom: $margin-large;
+            }
+        }
+        
+        padding-right: $margin-small;
+        
+        @include tablet {
+            padding-right: $margin-small;
+        }
+        
+        @include desktop {
+            padding-right: $margin-medium;
+        }
+        
+        @include tablet {
+            
+            &:first-child {
+                padding-top: $margin-large;
+            }
+            
+        }
+        
+    }
+    
+    &__question {
+        text-align: center;
+        padding-bottom: $margin-small;
+    }
+    
+    .no-touch & {
+        
+        &:hover {
+            opacity: 1 !important;
+        }
+        
+    }
+    
+    $answer-width-phone: 25%;
+    $answer-width-tablet: 35%;
+    $answer-width-desktop: 35%;
+    
+    &__answers {
+        height: 1.5em;
+        position: relative;
+    }
+    
+    &__answer {
+        
+        position: absolute;
+        height: 100%;
+        top: 10%;
+        
+        &_left {
+            text-align: right;
+            padding-right: .5em;
+        }
+        
+        &_right {
+            right: 0;
+            padding-left: .5em;
+        }
+        
+        width: $answer-width-phone;
+        
+        @include tablet {
+            
+            width: $answer-width-tablet;
+            
+        }
+        
+        @include desktop {
+            
+            width: $answer-width-desktop;
+            
+        }
+        
+    }
+    
+    &__bar {
+        
+        position: absolute;
+        
+        width: 100% - ($answer-width-phone * 2);
+        height: 80%;
+        top: 10%;
+        left: $answer-width-phone;
+        
+        @include tablet {
+            
+            width: 100% - ($answer-width-tablet * 2);
+            left: $answer-width-tablet;
+            
+        }
+        
+        @include desktop {
+            
+            width: 100% - ($answer-width-desktop * 2);
+            left: $answer-width-desktop;
+            
+        }
+        
+        border: 1px solid black;
+        
+    }
+    
+    &__indicator {
+        
+        position: absolute;
+        left: 50%;
+        height: 100%;
+        width: 90%;
+        border-left: 1px solid black;
+        pointer-events: none;
+        transition: transform 1.5s;
+        
+    }
+    
+}
+
+.bio {
+    
+    display: none;
+    
+    position: fixed;
+    top: $margin-small * 3;
+    left: 50%;
+    pointer-events: none;
+    transform: translateX(-50%);
+    
+}

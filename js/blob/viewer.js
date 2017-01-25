@@ -219,8 +219,8 @@ module.exports = class BlobViewer extends BlobRenderer {
         
         var r = this.cameraDistance;
         
-        this.cameraAzimuth += dx * -2;
-        this.cameraInclination = clamp( this.cameraInclination + dy * 2, .01, 2 );
+        this.cameraAzimuth += dx * -3;
+        this.cameraInclination = clamp( this.cameraInclination + dy * 3, .01, 2 );
         
         var sinInc = Math.sin( this.cameraInclination );
         var cosInc = Math.cos( this.cameraInclination );
@@ -233,9 +233,7 @@ module.exports = class BlobViewer extends BlobRenderer {
             r * sinInc * sinAz
         ])
         
-        console.log( r * sinInc * cosAz,
-            r * cosInc,
-            r * sinInc * sinAz )
+        console.log( this.shader.uniforms.camera );
         
         this.prevCameraInput = point;
         

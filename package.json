@@ -25,13 +25,16 @@
     "watchify": "^3.7.0"
   },
   "dependencies": {
+    "corejs-typeahead": "^1.1.1",
+    "country-list": "^1.1.0",
     "detectcss": "^1.0.2",
     "eases": "^1.0.8",
+    "es6-shim": "^0.35.2",
     "gl-context": "^0.1.1",
     "jquery": "^3.1.1",
     "lodash": "^4.17.4",
     "page": "^1.7.1",
     "promise": "^7.1.1",
-    "query-string": "^4.3.1"
+    "relevancy": "^0.2.0"
   }
 }

@@ -10,6 +10,7 @@
 #pragma glslify: glitter = require(./lib/glitter.glsl)
 #pragma glslify: twist = require(../field/lib/twist);
 #pragma glslify: spherize = require(./lib/spherize);
+#pragma glslify: voronoise = require(./lib/voronoise);
 
 const float PI = 3.14159;
 const float PI2 = PI * 2.;
@@ -19,8 +20,12 @@ uniform samplerCube marbleTexture;
 uniform sampler2D backgroundTexture;
 uniform float marbleAmount;
 uniform float pointsAmount;
+uniform float haloAmount;
 uniform float light1Intensity;
 uniform float light2Intensity;
+uniform float baseRed;
+uniform float baseGreen;
+uniform float baseBlue;
 
 vec3 pointLight(
     vec3 p,
@@ -49,7 +54,7 @@ vec3 pointLight( vec3 p, vec3 nor, vec3 eye, vec3 position, vec3 color ) {
     
 }
 
-vec3 render( in vec3 p, const in vec3 eye, const in vec2 mouse, float ao ) {
+vec3 render( in vec3 p, const in vec3 eye, const in vec3 mouse, float ao ) {
     
     vec3 rotP = p;
     vec3 n = normal( p );
@@ -72,7 +77,9 @@ vec3 render( in vec3 p, const in vec3 eye, const in vec2 mouse, float ao ) {
     
     //n = normalize( n - noiseNormal( normalize(cross(n, p)).xy * 5. ) * .25 );
     
-    vec3 baseColor = gradientSample( rotP, time );
+    vec3 baseColor = vec3( 1. - baseRed, 1. - baseGreen, 1. - baseBlue );//gradientSample( rotP, time ) * .8;
+    
+    baseColor *= .5 + .5 * ( 1. - light1Intensity );
     
     vec3 marbleColor = vec3(1.) - baseColor;
     float marble = 0.;
@@ -92,42 +99,42 @@ vec3 render( in vec3 p, const in vec3 eye, const in vec2 mouse, float ao ) {
     
     }
     
-    vec3 diffuse = mix(baseColor, marbleColor, marble);
+    vec3 diffuse = vec3(1.);
     
     //vec3 bump = crinklyNormal(p + rotN);
     //n = normalize( n + bump * .2 );
     
-    vec3 emissive = mix( vec3(0.), vec3( 1. - clamp( length( p ) * .8, 0., 1.) ), 0.);
-    vec3 ambient = mix( mix( vec3(.5), vec3(.3), marbleAmount), vec3(.1), marble);// * ao;
-    float roughness = mix( mix( .15, 0., marbleAmount), .3, marble);
-    float specularity = mix(.03, .5, marble);
+    vec3 emissive = mix(baseColor * .5, marbleColor, marble);//mix( vec3(0.), vec3( 1. - clamp( length( p ) * .8, 0., 1.) ), 0.);
+    vec3 ambient = vec3(0.);//mix( mix( vec3(.5), vec3(.3), marbleAmount), vec3(.1), marble);// * ao;
+    float roughness = mix( mix( 1., 0., marbleAmount), .3, marble);
+    float specularity = .03;//mix(.03, .5, marble);
     vec3 specColor = mix(vec3(1.), vec3(0.), marble);
     
     // vec3 rotP = rotateVec3( p, vec3(.2, .9, .4), time );
     // float stripes = step( .8, fract( rotP.x * 10. ) );
     
-    vec3 light = ambient;
+    vec3 light = ambient * ( .1 + .9 * ( 1. - light2Intensity ) );
     
-    vec3 mouseLightPosition = vec3( camera.xy + mouse * 2., -3. );
+    vec3 mouseLightPosition = mouse * 3.;//vec3( camera.xy + mouse * 2., 3. );
     vec3 oilColor = vec3(0.);
     
     if ( oiliness > 0. ) {
         
-        oilColor = oil( p, n, mouseLightPosition ) * 3.;
+        oilColor = oil( rotP, -n, mouseLightPosition );
         
     }
     
-    vec3 mouseLightColor = mix( vec3(.8, .8, .8), oilColor, oiliness );
-    //vec3 mouseLightPosition = vec3( mouse * 8., -4. + length(mouse) * 4. );
+    vec3 mouseLightColor = vec3(.2) + oilColor * oiliness;
+    // vec3 mouseLightPosition = vec3( mouse * 8., -4. + length(mouse) * 4. );
     light += pointLight( p, n, eye, mouseLightPosition, mouseLightColor, roughness, specularity, specColor );
     
-    vec3 light1Position = vec3(0., 3., 0.);
-    vec3 light1Color = vec3( 1.4, .8, .9 ) * .5;
+    vec3 light1Position = mix( vec3(0., 3., 0.), vec3( 0., 1.4, 2. ), light1Intensity );
+    vec3 light1Color = mix( vec3( .7, .4, .45 ), vec3( 1., .3, 0. ), light1Intensity );
     light += pointLight( p, n, eye, light1Position, light1Color, roughness, specularity, specColor );
     
-    vec3 light2Position = mix( vec3(-1., -1., -.7), vec3(-5., -3., -2.), 0.);
-    vec3 light2Color = mix( vec3( .35, .1, .05 ), vec3( 0., 0., 1. ), 0.);
-    light += pointLight( p, n, eye, light2Position, light2Color, roughness, specularity, specColor );
+    vec3 light2Position = mix( vec3(-1., -1., .7), vec3(-5., -3., 2.), light2Intensity);
+    vec3 light2Color = mix( vec3( .35, .1, .05 ), vec3( 0., 0., 1. ), light2Intensity);
+    light += pointLight( p, n, eye, light2Position, light2Color, roughness, specularity, light2Color );
     
     //vec2 points2 = vec2(1.) - step( vec2(.1), mod( pn.xy * vec2(20.), vec2(2.) ) );
     //float points = points2.x * points2.y * 10.;
@@ -137,6 +144,10 @@ vec3 render( in vec3 p, const in vec3 eye, const in vec2 mouse, float ao ) {
     light = clamp( light, 0., .95 );
     
     vec3 color = emissive + diffuse * light;
+    
+    
+    
+    color = mix( color, vec3( haloAmount ), mix( .4 - ao * .6, 1. - ao, haloAmount ) );
     
     if ( pointsAmount > 0. ) {
     
@@ -168,7 +179,7 @@ vec3 render( in vec3 p, const in vec3 eye, const in vec2 mouse, float ao ) {
     #endif
     
     // gamma!?
-    color = pow( color, vec3(0.5545) );
+    color = pow( color, vec3(0.75) );
     
     return color;
     

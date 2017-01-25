@@ -1,0 +1,41 @@
+.archive {
+    
+    .bg-title {
+        display: none;
+        width: 100% / $columns-small;
+        height: 100vw / $columns-small;
+        top: 100vw / $columns-small * .5;
+        pointer-events: none;
+        
+        @include tablet {
+            width: 100% / $columns-medium;
+            height: 100vw / $columns-medium;
+            top: 100vw / $columns-medium * 1.5;
+        }
+        
+        @include desktop {
+            width: 100% / $columns-large;
+            height: 100vw / $columns-large;
+            top: 100vw / $columns-large * 1.5;
+        }
+        
+        position: fixed;
+        left: 50%;
+        transform: translate(-50%, 0%);
+        background-image: url(assets/title_white.svg);
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center center;
+        z-index: 50;
+
+    }
+    
+    .button {
+        border: 1px solid white;
+  
+        
+        a {
+            color: white;
+        }
+    }
+}

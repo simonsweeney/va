@@ -1,7 +1,10 @@
-var BlobViewer = require('../blob/viewer');
-var randomParams = require('../lib/randomParams');
-var tween = require('../lib/tween');
-var template = require('./lib/template')( require('./home.html') );
+var BlobViewer = require('../../blob/viewer');
+var randomParams = require('../../lib/randomParams');
+var tween = require('../../lib/tween');
+var answersToArray = require('../../blob/lib/answersToArray');
+var answersToParams = require('../../blob/lib/answersToParams');
+var questions = require('../../questions.json');
+var template = require('../lib/template')( require('./home.html') );
 
 module.exports = function ( ctx, next ) {
     
@@ -11,11 +14,18 @@ module.exports = function ( ctx, next ) {
     var cube = ctx.envMap;
     var title = ctx.title;
     
-    var params = randomParams();
+    var answers = answersToArray( ctx.data );
+    
+    //answers = answers.map( a => Math.random() * 2 - 1 );
+
+    var params = answersToParams( questions, answers, true );
+    
     params.marbleTexture = cube;
     params.backgroundTexture = title;
-    params.camera = [0, 0, -5];
+    params.camera = [0, 0, 4];
     params.subtract = 2;
+    
+    console.log(params);
     
     var blob = new BlobViewer( gl, params );
     
